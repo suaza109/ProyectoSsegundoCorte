@@ -25,7 +25,7 @@ public class PokemonDAO implements CRUDOperation {
 			contenido += listaPokemon.get(i).getDefensa() + ";";
 			contenido += listaPokemon.get(i).getListaAtaque() + ";";
 			contenido += listaPokemon.get(i).getDefensaEspecial() + ";";
-			contenido += listaPokemon.get(i).getVelocidad() + ";";
+			contenido += listaPokemon.get(i).getVelocidad();
 
 			if (i < listaPokemon.size() - 1) {
 				contenido += "\n";
@@ -33,11 +33,11 @@ public class PokemonDAO implements CRUDOperation {
 
 		}
 
-		FileHandler.abrirYEscribirArchivo("Planeta.csv", contenido);
+		FileHandler.abrirYEscribirArchivo("Pokedex.csv", contenido);
 	}
 
 	public void leerDesdeArchivo() {
-		String contenido = FileHandler.abrirYLeerArchivo("Planeta.csv");
+		String contenido = FileHandler.abrirYLeerArchivo("Pokedex.csv");
 		if (contenido.equals("")) {
 			listaPokemon = new ArrayList<>();
 			return;
@@ -53,47 +53,82 @@ public class PokemonDAO implements CRUDOperation {
 			temp.setVida(Integer.parseInt(columnas[3]));
 			temp.setAtaque(Integer.parseInt(columnas[4]));
 			temp.setDefensa(Integer.parseInt(columnas[5]));
-			 // Parsear lista de ataques
-	        String[] ataquesStr = columnas[6].split(";"); // Suponiendo que los ataques están separados por comas
-	        ArrayList<AtaqueDTO> listaAtaques = new ArrayList<>();
-	        for (String ataqueStr : ataquesStr) {
-	            AtaqueDTO ataque = new AtaqueDTO();
-	            // Aquí deberías parsear los datos del ataque según tu estructura en el archivo CSV
-	            // Supongamos que el nombre del ataque está en la primera posición de los datos del ataque
-	            ataque.setNombre(ataqueStr.trim()); // Suponiendo que el nombre del ataque está en la primera posición
-	            listaAtaques.add(ataque);
-	        }
-	        temp.setListaAtaque(listaAtaques);
+			// Parsear lista de ataques
+			String[] ataquesStr = columnas[6].split(";"); // Suponiendo que los ataques están separados por comas
+			ArrayList<AtaqueDTO> listaAtaques = new ArrayList<>();
+			for (String ataqueStr : ataquesStr) {
+				AtaqueDTO ataque = new AtaqueDTO();
+				// Aquí deberías parsear los datos del ataque según tu estructura en el archivo
+				// CSV
+				// Supongamos que el nombre del ataque está en la primera posición de los datos
+				// del ataque
+				ataque.setNombre(ataqueStr.trim()); // Suponiendo que el nombre del ataque está en la primera posición
+				listaAtaques.add(ataque);
+			}
+			temp.setListaAtaque(listaAtaques);
 
-	        listaPokemon.add(temp);
-	        temp.setDefensaEspecial(columnas[7]);
-	        temp.setVelocidad(Integer.parseInt(columnas[8]));
+			listaPokemon.add(temp);
+			temp.setDefensaEspecial(columnas[7]);
+			temp.setVelocidad(Integer.parseInt(columnas[8]));
 
 		}
 	}
 
 	@Override
 	public void create(Object o) {
-		// TODO Auto-generated method stub
-		
+		PokemonDTO info = (PokemonDTO) o;
+		listaPokemon.add(info);
+		escribirEnArchivo();
+		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", o);
 	}
 
 	@Override
 	public boolean delete(int index) {
-		// TODO Auto-generated method stub
-		return false;
+		if (index < 0 || index >= listaPokemon.size()) {
+			return false;
+		} else {
+			listaPokemon.remove(index);
+			escribirEnArchivo();
+			return true;
+		}
 	}
 
 	@Override
 	public boolean update(int index, Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		if (index < 0 || index >= listaPokemon.size()) {
+			return false;
+		} else {
+			PokemonDTO info = (PokemonDTO) o;
+			listaPokemon.get(index).setNombre(info.getNombre());
+			listaPokemon.get(index).setTipoPokemon(info.getTipoPokemon());
+			listaPokemon.get(index).setId(info.getId());
+			listaPokemon.get(index).setVida(info.getVida());
+			listaPokemon.get(index).setAtaque(info.getAtaque());
+			listaPokemon.get(index).setDefensa(info.getDefensa());
+			listaPokemon.get(index).setListaAtaque(info.getListaAtaque());
+			listaPokemon.get(index).setDefensaEspecial(info.getDefensaEspecial());
+			listaPokemon.get(index).setVelocidad(info.getVelocidad());
+
+		}
+		escribirEnArchivo();
+		return true;
 	}
 
 	@Override
 	public String read() {
+		String exit = "";
+		for (PokemonDTO p : listaPokemon) {
+			exit += p.toString() + "\n";
+		}
+
+		return exit;
+
+	}
+
+	@Override
+	public void create() {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 }

@@ -8,4 +8,6 @@ public interface CRUDOperation {
 	public boolean update(int index, Object o);
 
 	public String read();
+	 
+	public void create();
 }
