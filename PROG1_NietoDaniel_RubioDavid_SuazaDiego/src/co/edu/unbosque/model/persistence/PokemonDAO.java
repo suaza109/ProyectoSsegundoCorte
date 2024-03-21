@@ -5,14 +5,46 @@ import java.util.ArrayList;
 import co.edu.unbosque.model.AtaqueDTO;
 import co.edu.unbosque.model.PokemonDTO;
 
+/*
+ * La clase PokemonDAO es una implementacion de la interfaz CRUDOperation para operaciones relacionadas con los pokemones.
+ * Gestiona una lista de objetos PokemonDTO y proporciona metodos para crear, eliminar, actualizar y leer pokemones.
+ */
+
 public class PokemonDAO implements CRUDOperation {
 
 	private ArrayList<PokemonDTO> listaPokemon;
 
+	/*
+	 * Constructor de la clase PokemonDAO que inicializa la lista de pokemones y lee
+	 * lo serializado.
+	 */
+
 	public PokemonDAO() {
 		listaPokemon = new ArrayList<>();
-		leerDesdeArchivo();
+		// *leerDesdeArchivo();
+		leerDesdeSerializado();
 	}
+
+	/*
+	 * La funcion leerDesdeSerializado lee desde serializado.
+	 * 
+	 * Abre y lee desde serializado si existe una lista de pokemones.
+	 */
+
+	public void leerDesdeSerializado() {
+
+		Object temp = FileHandler.abrirYLeerSerializable("Planeta.ds");
+		if (temp == null) {
+			listaPokemon = new ArrayList<>();
+		} else {
+			listaPokemon = (ArrayList<PokemonDTO>) temp;
+		}
+	}
+
+	/*
+	 * La funcion atrae todo lo que se haya digitado en consola a contenido , y en
+	 * contenido crea un archivo y lo escribe con lo que hay en el contenido.
+	 */
 
 	public void escribirEnArchivo() {
 		String contenido = "";
@@ -53,16 +85,11 @@ public class PokemonDAO implements CRUDOperation {
 			temp.setVida(Integer.parseInt(columnas[3]));
 			temp.setAtaque(Integer.parseInt(columnas[4]));
 			temp.setDefensa(Integer.parseInt(columnas[5]));
-			// Parsear lista de ataques
-			String[] ataquesStr = columnas[6].split(";"); // Suponiendo que los ataques están separados por comas
+			String[] ataquesStr = columnas[6].split(";");
 			ArrayList<AtaqueDTO> listaAtaques = new ArrayList<>();
 			for (String ataqueStr : ataquesStr) {
 				AtaqueDTO ataque = new AtaqueDTO();
-				// Aquí deberías parsear los datos del ataque según tu estructura en el archivo
-				// CSV
-				// Supongamos que el nombre del ataque está en la primera posición de los datos
-				// del ataque
-				ataque.setNombre(ataqueStr.trim()); // Suponiendo que el nombre del ataque está en la primera posición
+				ataque.setNombre(ataqueStr.trim());
 				listaAtaques.add(ataque);
 			}
 			temp.setListaAtaque(listaAtaques);
@@ -74,6 +101,11 @@ public class PokemonDAO implements CRUDOperation {
 		}
 	}
 
+	/*
+	 * Este metodo agrega un metodo PokemonDTO a la lista de pokemones en el DAO y
+	 * escribe los cambios en un archivo.
+	 */
+
 	@Override
 	public void create(Object o) {
 		PokemonDTO info = (PokemonDTO) o;
@@ -81,6 +113,15 @@ public class PokemonDAO implements CRUDOperation {
 		escribirEnArchivo();
 		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", o);
 	}
+
+	/*
+	 * Este metodo elimina un pokemon de la lista de pokemones
+	 * 
+	 * @param index
+	 * 
+	 * @return true si el pokemon se elimino correctamente, false si la posicion no
+	 * existe.
+	 */
 
 	@Override
 	public boolean delete(int index) {
@@ -92,6 +133,12 @@ public class PokemonDAO implements CRUDOperation {
 			return true;
 		}
 	}
+
+	/*
+	 * Este metodo actualiza un pokemon de la lista en la posicion especificada por
+	 * index con los atributos de otro objeto PokemonDTO.Luego, guarda los datos en
+	 * el archivo.
+	 */
 
 	@Override
 	public boolean update(int index, Object o) {

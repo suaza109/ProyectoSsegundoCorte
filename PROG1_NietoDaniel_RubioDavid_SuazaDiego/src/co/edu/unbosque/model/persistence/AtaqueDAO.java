@@ -5,13 +5,33 @@ import java.util.ArrayList;
 import co.edu.unbosque.model.AtaqueDTO;
 import co.edu.unbosque.model.PokemonDTO;
 
+/*
+ * La clase AtaqueDAO es una implementacion de CRUDOperation para operaciones relacionadas con los ataques.
+ * Hace uso de una lista de objetos de AtaqueDTO y proporciona metodos para crear, eliminar, actualizar y leer.
+ */
+
 public class AtaqueDAO implements CRUDOperation {
 
 	private ArrayList<AtaqueDTO> listaAtaque;
 
+	/*
+	 * Constructor de la clase AtaqueDAO que inicializa la lista de ataques
+	 */
+
 	public AtaqueDAO() {
 		listaAtaque = new ArrayList<>();
-		leerDesdeArchivo();
+		// *leerDesdeArchivo();
+		leerDesdeSerializado();
+	}
+
+	public void leerDesdeSerializado() {
+
+		Object temp = FileHandler.abrirYLeerSerializable("Ataque.nrs");
+		if (temp == null) {
+			listaAtaque = new ArrayList<>();
+		} else {
+			listaAtaque = (ArrayList<AtaqueDTO>) temp;
+		}
 	}
 
 	public void escribirEnArchivo() {
