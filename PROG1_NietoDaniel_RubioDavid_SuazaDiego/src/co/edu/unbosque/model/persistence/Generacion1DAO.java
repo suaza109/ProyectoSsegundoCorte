@@ -69,7 +69,7 @@ public class Generacion1DAO implements CRUDOperation {
 			for (String ataqueStr : ataquesStr) {
 				Generacion1DTO ataque = new Generacion1DTO();
 				ataque.setNombre(ataqueStr.trim());
-				listaAtaques.add(ataque);
+				listaAtaques.add(new AtaqueDTO());
 			}
 			temp.setListaAtaque(listaAtaques);
 
@@ -82,26 +82,53 @@ public class Generacion1DAO implements CRUDOperation {
 
 	@Override
 	public void create(Object o) {
-		// TODO Auto-generated method stub
+		Generacion1DTO nuevo = (Generacion1DTO) o;
+		listaGen1.add(nuevo);
+		escribirEnArchivo();
+		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", listaGen1);
 
 	}
 
 	@Override
 	public boolean delete(int index) {
-		// TODO Auto-generated method stub
-		return false;
+		if (index < 0 || index >= listaGen1.size()) {
+			return false;
+		} else {
+			listaGen1.remove(index);
+			escribirEnArchivo();
+			return true;
+		}
 	}
 
 	@Override
 	public boolean update(int index, Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		if (index < 0 || index >= listaGen1.size()) {
+			return false;
+		} else {
+			Generacion1DTO info = (Generacion1DTO) o;
+			listaGen1.get(index).setNombre(info.getNombre());
+			listaGen1.get(index).setTipoPokemon(info.getTipoPokemon());
+			listaGen1.get(index).setId(info.getId());
+			listaGen1.get(index).setVida(info.getVida());
+			listaGen1.get(index).setAtaque(info.getAtaque());
+			listaGen1.get(index).setDefensa(info.getDefensa());
+			listaGen1.get(index).setListaAtaque(info.getListaAtaque());
+			listaGen1.get(index).setDefensaEspecial(info.getDefensaEspecial());
+			listaGen1.get(index).setVelocidad(info.getVelocidad());
+
+		}
+		escribirEnArchivo();
+		return true;
 	}
 
 	@Override
 	public String read() {
-		// TODO Auto-generated method stub
-		return null;
+		String exit = "";
+		for (Generacion1DTO g : listaGen1) {
+			exit += g.toString() + "\n";
+		}
+
+		return exit;
 	}
 
 	@Override
