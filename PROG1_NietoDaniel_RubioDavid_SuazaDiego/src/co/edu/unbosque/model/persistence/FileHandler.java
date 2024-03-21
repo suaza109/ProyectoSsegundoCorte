@@ -8,8 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
-
+	/*
+	 * Clase que proporciona métodos para manejar archivos, incluyendo lectura y escritura de archivos de texto y archivos serializados.
+	 */
 public class FileHandler {
+	// OBJECT SE ENCARGA DE MODIFICARLO
 	private static File archivo;
 	private static Scanner lectorDeArchivo;
 	private static PrintWriter escritorDeArchivo;
@@ -18,6 +21,14 @@ public class FileHandler {
 	private static ObjectInputStream ois;
 	private static FileOutputStream fos;
 	private static ObjectOutputStream oos;
+	
+	/*
+	 * Abre y lee un archivo serializado.
+	     *
+	     * @param url El nombre del archivo serializado.
+	     * @return El contenido del archivo serializado como objeto.
+	     */
+	 
 
 	public static Object abrirYLeerSerializable(String url) {
 		Object contenido = null;
@@ -37,6 +48,13 @@ public class FileHandler {
 		}
 		return contenido;
 	}
+	
+	/*
+	*  Abre y escribe en un archivo serializado.
+	*
+	* @param url  El nombre del archivo serializado.
+	* @param contenido  El contenido que se desea escribir en el archivo serializado.
+	*/
 
 	public static void abrirYEscribirSerializado(String url, Object contenido) {
 		archivo = new File(url);
@@ -53,6 +71,13 @@ public class FileHandler {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	 * Abre y lee un archivo de texto.
+	 *
+	 * @param url La URL o nombre del archivo de texto.
+	 * @return El contenido del archivo de texto como una cadena de caracteres.
+	 */
 
 	public static String abrirYLeerArchivo(String url) {
 		String contenido = "";
@@ -72,6 +97,13 @@ public class FileHandler {
 		}
 		return contenido;
 	}
+	
+	/*
+	 * Abre y escribe en un archivo de texto.
+	 *
+	 * @param url           La URL o nombre del archivo de texto.
+	 * @param contenido  El contenido que se desea escribir en el archivo de texto.
+	 */
 
 	public static void abrirYEscribirArchivo(String url, String contenido) {
 

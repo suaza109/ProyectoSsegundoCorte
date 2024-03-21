@@ -1,7 +1,12 @@
 package co.edu.unbosque.controller;
-
-public class Controller {
-
+	
+	/*
+ 	* Esta clase es el controlador principal del programa.
+ 	*/
+	class Controller {
+	/*
+	* run muestra la ventana principal de la aplicacion.
+	*/
 	public void run() {
 		// TODO Auto-generated method stub
 		
