@@ -24,6 +24,10 @@ public class AtaqueDAO implements CRUDOperation {
 		leerDesdeSerializado();
 	}
 
+	/*
+	 * Lee la lista de ataques en un archivo serializado.
+	 */
+
 	public void leerDesdeSerializado() {
 
 		Object temp = FileHandler.abrirYLeerSerializable("Ataque.nrs");
@@ -33,6 +37,11 @@ public class AtaqueDAO implements CRUDOperation {
 			listaAtaque = (ArrayList<AtaqueDTO>) temp;
 		}
 	}
+
+	/*
+	 * La funcion atrae todo lo que se haya digitado en consola a contenido , y en
+	 * contenido crea un archivo y lo escribe con lo que hay en el contenido.
+	 */
 
 	public void escribirEnArchivo() {
 		String contenido = "";
@@ -47,6 +56,10 @@ public class AtaqueDAO implements CRUDOperation {
 		FileHandler.abrirYEscribirArchivo("Ataques.csv", contenido);
 
 	}
+
+	/*
+	 * Lee la lista de ataques desde un archivo de texto.
+	 */
 
 	public void leerDesdeArchivo() {
 		String contenido = FileHandler.abrirYLeerArchivo("Pokedex.csv");
@@ -66,6 +79,11 @@ public class AtaqueDAO implements CRUDOperation {
 		}
 	}
 
+	/*
+	 * Este metodo agrega un metodo AtaqueDTO a la lista de ataques en el DAO y
+	 * escribe los cambios en un archivo.
+	 */
+
 	@Override
 	public void create(Object o) {
 		AtaqueDTO info = (AtaqueDTO) o;
@@ -73,6 +91,15 @@ public class AtaqueDAO implements CRUDOperation {
 		escribirEnArchivo();
 		FileHandler.abrirYEscribirSerializado("Ataque.nrs", o);
 	}
+
+	/*
+	 * Este metodo elimina un pokemon de la lista de pokemones
+	 * 
+	 * @param index
+	 * 
+	 * @return true si el pokemon se elimino correctamente, false si la posicion no
+	 * existe.
+	 */
 
 	@Override
 	public boolean delete(int index) {
@@ -84,6 +111,12 @@ public class AtaqueDAO implements CRUDOperation {
 			return true;
 		}
 	}
+
+	/*
+	 * Este metodo actualiza un ataque de la lista en la posicion especificada por
+	 * index con los atributos de otro objeto AtaqueDTO.Luego, guarda los datos en
+	 * el archivo.
+	 */
 
 	@Override
 	public boolean update(int index, Object o) {
@@ -98,6 +131,11 @@ public class AtaqueDAO implements CRUDOperation {
 		return true;
 	}
 
+	/*
+	 * Este método devuelve una cadena que contiene una representación de todos los
+	 * ataques almacenados en el DAO.
+	 */
+
 	@Override
 	public String read() {
 		String exit = "";
@@ -108,6 +146,8 @@ public class AtaqueDAO implements CRUDOperation {
 		return exit;
 
 	}
+	
+	
 
 	@Override
 	public void create() {

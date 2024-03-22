@@ -4,38 +4,38 @@ import java.util.ArrayList;
 
 import co.edu.unbosque.model.AtaqueDTO;
 import co.edu.unbosque.model.Generacion1DTO;
-import co.edu.unbosque.model.PokemonDTO;
+import co.edu.unbosque.model.Generacion9DTO;
 
 /*
- * La clase Generacion1DAO es una implementacion de CRUDOperation para operaciones relacionadas con los pokemones de esta generacion.
+ * La clase Generacion9DAO es una implementacion de CRUDOperation para operaciones relacionadas con los pokemones de esta generacion.
  * Hace uso de una lista de objetos de Generacion1DTO y proporciona metodos para crear, eliminar, actualizar y leer.
  */
 
-public class Generacion1DAO implements CRUDOperation {
-	private ArrayList<Generacion1DTO> listaGen1;
+public class Generacion9DAO implements CRUDOperation {
+	private ArrayList<Generacion9DTO> listaGen9;
 
 	/*
-	 * Constructor de la clase Generacion1DAO que inicializa la lista de la
+	 * Constructor de la clase Generacion9DAO que inicializa la lista de la
 	 * generacion y utiliza la funcion de leer desde serializado.
 	 */
 
-	public Generacion1DAO() {
-		listaGen1 = new ArrayList<>();
+	public Generacion9DAO() {
+		listaGen9 = new ArrayList<>();
 		// *leerDesdeArchivo();
 		leerDesdeSerializado();
 	}
 
 	/*
-	 * Lee la lista de la generacion 1 de pokemones mediante un archivo serializado.
+	 * Lee la lista de la generacion 9 de pokemones mediante un archivo serializado.
 	 */
 
 	public void leerDesdeSerializado() {
 
 		Object temp = FileHandler.abrirYLeerSerializable("Planeta.ds");
 		if (temp == null) {
-			listaGen1 = new ArrayList<>();
+			listaGen9 = new ArrayList<>();
 		} else {
-			listaGen1 = (ArrayList<Generacion1DTO>) temp;
+			listaGen9 = (ArrayList<Generacion9DTO>) temp;
 		}
 	}
 
@@ -46,18 +46,18 @@ public class Generacion1DAO implements CRUDOperation {
 
 	public void escribirEnArchivo() {
 		String contenido = "";
-		for (int i = 0; i < listaGen1.size(); i++) {
-			contenido += listaGen1.get(i).getNombre() + ";";
-			contenido += listaGen1.get(i).getTipoPokemon() + ";";
-			contenido += listaGen1.get(i).getId() + ";";
-			contenido += listaGen1.get(i).getVida() + ";";
-			contenido += listaGen1.get(i).getAtaque() + ";";
-			contenido += listaGen1.get(i).getDefensa() + ";";
-			contenido += listaGen1.get(i).getListaAtaque() + ";";
-			contenido += listaGen1.get(i).getDefensaEspecial() + ";";
-			contenido += listaGen1.get(i).getVelocidad();
+		for (int i = 0; i < listaGen9.size(); i++) {
+			contenido += listaGen9.get(i).getNombre() + ";";
+			contenido += listaGen9.get(i).getTipoPokemon() + ";";
+			contenido += listaGen9.get(i).getId() + ";";
+			contenido += listaGen9.get(i).getVida() + ";";
+			contenido += listaGen9.get(i).getAtaque() + ";";
+			contenido += listaGen9.get(i).getDefensa() + ";";
+			contenido += listaGen9.get(i).getListaAtaque() + ";";
+			contenido += listaGen9.get(i).getDefensaEspecial() + ";";
+			contenido += listaGen9.get(i).getVelocidad();
 
-			if (i < listaGen1.size() - 1) {
+			if (i < listaGen9.size() - 1) {
 				contenido += "\n";
 			}
 
@@ -67,20 +67,20 @@ public class Generacion1DAO implements CRUDOperation {
 	}
 
 	/*
-	 * Lee la lista de la generacion 1 de pokemones desde un archivo de texto.
+	 * Lee la lista de la generacion 9 de pokemones desde un archivo de texto.
 	 */
 
 	public void leerDesdeArchivo() {
 		String contenido = FileHandler.abrirYLeerArchivo("Pokedex.csv");
 		if (contenido.equals("")) {
-			listaGen1 = new ArrayList<>();
+			listaGen9 = new ArrayList<>();
 			return;
 		}
 
 		String[] filas = contenido.split("\n");
 		for (int i = 0; i < filas.length; i++) {
 			String[] columnas = filas[i].split(";");
-			Generacion1DTO temp = new Generacion1DTO();
+			Generacion9DTO temp = new Generacion9DTO();
 			temp.setNombre(columnas[0]);
 			temp.setTipoPokemon(columnas[1]);
 			temp.setId(Integer.parseInt(columnas[2]));
@@ -90,13 +90,13 @@ public class Generacion1DAO implements CRUDOperation {
 			String[] ataquesStr = columnas[6].split(";");
 			ArrayList<AtaqueDTO> listaAtaques = new ArrayList<>();
 			for (String ataqueStr : ataquesStr) {
-				Generacion1DTO ataque = new Generacion1DTO();
+				Generacion9DTO ataque = new Generacion9DTO();
 				ataque.setNombre(ataqueStr.trim());
 				listaAtaques.add(new AtaqueDTO());
 			}
 			temp.setListaAtaque(listaAtaques);
 
-			listaGen1.add(temp);
+			listaGen9.add(temp);
 			temp.setDefensaEspecial(columnas[7]);
 			temp.setVelocidad(Integer.parseInt(columnas[8]));
 
@@ -104,21 +104,20 @@ public class Generacion1DAO implements CRUDOperation {
 	}
 
 	/*
-	 * Este metodo agrega un metodo Generacion1DTO a la lista de la generacion en el
+	 * Este metodo agrega un metodo Generacion9DTO a la lista de la generacion en el
 	 * DAO y escribe los cambios en un archivo.
 	 */
 
 	@Override
 	public void create(Object o) {
-		Generacion1DTO nuevo = (Generacion1DTO) o;
-		listaGen1.add(nuevo);
+		Generacion9DTO nuevo = (Generacion9DTO) o;
+		listaGen9.add(nuevo);
 		escribirEnArchivo();
-		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", listaGen1);
-
+		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", listaGen9);
 	}
 
 	/*
-	 * Este metodo elimina un pokemon de la generacion 1 de la lista de pokemones
+	 * Este metodo elimina un pokemon de la generacion 9 de la lista de pokemones
 	 * 
 	 * @param index
 	 * 
@@ -128,10 +127,10 @@ public class Generacion1DAO implements CRUDOperation {
 
 	@Override
 	public boolean delete(int index) {
-		if (index < 0 || index >= listaGen1.size()) {
+		if (index < 0 || index >= listaGen9.size()) {
 			return false;
 		} else {
-			listaGen1.remove(index);
+			listaGen9.remove(index);
 			escribirEnArchivo();
 			return true;
 		}
@@ -140,24 +139,24 @@ public class Generacion1DAO implements CRUDOperation {
 	/*
 	 * Este metodo actualiza un pokemon de esta generacion, de la lista en la
 	 * posicion especificada por index con los atributos de otro objeto
-	 * Generacion1DTO.Luego, guarda los datos en el archivo.
+	 * Generacion9DTO.Luego, guarda los datos en el archivo.
 	 */
 
 	@Override
 	public boolean update(int index, Object o) {
-		if (index < 0 || index >= listaGen1.size()) {
+		if (index < 0 || index >= listaGen9.size()) {
 			return false;
 		} else {
-			Generacion1DTO info = (Generacion1DTO) o;
-			listaGen1.get(index).setNombre(info.getNombre());
-			listaGen1.get(index).setTipoPokemon(info.getTipoPokemon());
-			listaGen1.get(index).setId(info.getId());
-			listaGen1.get(index).setVida(info.getVida());
-			listaGen1.get(index).setAtaque(info.getAtaque());
-			listaGen1.get(index).setDefensa(info.getDefensa());
-			listaGen1.get(index).setListaAtaque(info.getListaAtaque());
-			listaGen1.get(index).setDefensaEspecial(info.getDefensaEspecial());
-			listaGen1.get(index).setVelocidad(info.getVelocidad());
+			Generacion9DTO info = (Generacion9DTO) o;
+			listaGen9.get(index).setNombre(info.getNombre());
+			listaGen9.get(index).setTipoPokemon(info.getTipoPokemon());
+			listaGen9.get(index).setId(info.getId());
+			listaGen9.get(index).setVida(info.getVida());
+			listaGen9.get(index).setAtaque(info.getAtaque());
+			listaGen9.get(index).setDefensa(info.getDefensa());
+			listaGen9.get(index).setListaAtaque(info.getListaAtaque());
+			listaGen9.get(index).setDefensaEspecial(info.getDefensaEspecial());
+			listaGen9.get(index).setVelocidad(info.getVelocidad());
 
 		}
 		escribirEnArchivo();
@@ -166,13 +165,13 @@ public class Generacion1DAO implements CRUDOperation {
 
 	/*
 	 * Este método devuelve una cadena que contiene una representación de todos los
-	 * pokemones de la generacion 1 almacenados en el DAO.
+	 * pokemones de la generacion 9 almacenados en el DAO.
 	 */
 
 	@Override
 	public String read() {
 		String exit = "";
-		for (Generacion1DTO g : listaGen1) {
+		for (Generacion9DTO g : listaGen9) {
 			exit += g.toString() + "\n";
 		}
 

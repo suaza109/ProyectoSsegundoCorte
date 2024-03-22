@@ -68,6 +68,10 @@ public class PokemonDAO implements CRUDOperation {
 		FileHandler.abrirYEscribirArchivo("Pokedex.csv", contenido);
 	}
 
+	/*
+	 * Lee la lista de pokemones desde un archivo de texto,
+	 */
+
 	public void leerDesdeArchivo() {
 		String contenido = FileHandler.abrirYLeerArchivo("Pokedex.csv");
 		if (contenido.equals("")) {
@@ -160,6 +164,11 @@ public class PokemonDAO implements CRUDOperation {
 		escribirEnArchivo();
 		return true;
 	}
+
+	/*
+	 * Este método devuelve una cadena que contiene una representación de todos los
+	 * pokemones almacenados en el DAO.
+	 */
 
 	@Override
 	public String read() {
