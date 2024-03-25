@@ -89,19 +89,11 @@ public class PokemonDAO implements CRUDOperation {
 			temp.setVida(Integer.parseInt(columnas[3]));
 			temp.setAtaque(Integer.parseInt(columnas[4]));
 			temp.setDefensa(Integer.parseInt(columnas[5]));
-			String[] ataquesStr = columnas[6].split(";");
-			ArrayList<AtaqueDTO> listaAtaques = new ArrayList<>();
-			for (String ataqueStr : ataquesStr) {
-				AtaqueDTO ataque = new AtaqueDTO();
-				ataque.setNombre(ataqueStr.trim());
-				listaAtaques.add(ataque);
-			}
-			temp.setListaAtaque(listaAtaques);
-
-			listaPokemon.add(temp);
+			temp.setListaAtaque(columnas[6]);
 			temp.setDefensaEspecial(columnas[7]);
 			temp.setVelocidad(Integer.parseInt(columnas[8]));
 
+			listaPokemon.add(temp);
 		}
 	}
 

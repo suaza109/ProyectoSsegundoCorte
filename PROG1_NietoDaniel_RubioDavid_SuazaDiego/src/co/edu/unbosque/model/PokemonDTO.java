@@ -1,7 +1,6 @@
 package co.edu.unbosque.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /*
  * La clase PokemonDTO representa todos los pokemones.
@@ -22,9 +21,9 @@ public class PokemonDTO implements Serializable {
 	private String tipoPokemon;
 	private int id;
 	private int vida;
-	private int ataque;
+	private int ptsAtaque;
 	private int defensa;
-	private ArrayList<AtaqueDTO> listaAtaque;
+	private String listaAtaque;
 	private String defensaEspecial;
 	private int velocidad;
 	
@@ -50,13 +49,13 @@ public class PokemonDTO implements Serializable {
 	 */
 
 	public PokemonDTO(String nombre, String tipoPokemon, int id, int vida, int ataque, int defensa,
-			ArrayList<AtaqueDTO> listaAtaque, String defensaEspecial, int velocidad) {
+			String listaAtaque, String defensaEspecial, int velocidad) {
 		super();
 		this.nombre = nombre;
 		this.tipoPokemon = tipoPokemon;
 		this.id = id;
 		this.vida = vida;
-		this.ataque = ataque;
+		this.ptsAtaque = ataque;
 		this.defensa = defensa;
 		this.listaAtaque = listaAtaque;
 		this.defensaEspecial = defensaEspecial;
@@ -150,7 +149,7 @@ public class PokemonDTO implements Serializable {
 	 */
 
 	public int getAtaque() {
-		return ataque;
+		return ptsAtaque;
 	}
 	
 	/*
@@ -160,7 +159,7 @@ public class PokemonDTO implements Serializable {
 	 */
 
 	public void setAtaque(int ataque) {
-		this.ataque = ataque;
+		this.ptsAtaque = ataque;
 	}
 	
 	/*
@@ -189,7 +188,7 @@ public class PokemonDTO implements Serializable {
 	 * @return listaAtaque		la lista de ataque del pokemon
 	 */
 
-	public ArrayList<AtaqueDTO> getListaAtaque() {
+	public String getListaAtaque() {
 		return listaAtaque;
 	}
 	
@@ -199,7 +198,7 @@ public class PokemonDTO implements Serializable {
 	 * @param listaAtaque	la nueva lista de ataque del pokemon
 	 */
 
-	public void setListaAtaque(ArrayList<AtaqueDTO> listaAtaque) {
+	public void setListaAtaque(String listaAtaque) {
 		this.listaAtaque = listaAtaque;
 	}
 	
@@ -252,7 +251,7 @@ public class PokemonDTO implements Serializable {
 	@Override
 	public String toString() {
 		return "Pokemon: \n Nombre:" + nombre + "\n Tipo de Pokemon:" + tipoPokemon + "\n Id:" + id + "\n Vida:" + vida
-				+ "\n Ataque:" + ataque + "\n Defensa:" + defensa + "\n Ataque Especial:" + listaAtaque
+				+ "\n Ataque:" + ptsAtaque + "\n Defensa:" + defensa + "\n Ataque Especial:" + listaAtaque
 				+ "\n Defensa Especial:" + defensaEspecial + "\n Velocidad:" + velocidad + "\n";
 	}
 

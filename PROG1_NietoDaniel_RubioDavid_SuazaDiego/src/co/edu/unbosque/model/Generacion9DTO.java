@@ -1,6 +1,5 @@
 package co.edu.unbosque.model;
 
-import java.util.ArrayList;
 
 /*
  * La clase Generacion3DTO representa la generacion 9 de los pokemones 
@@ -27,7 +26,7 @@ public class Generacion9DTO extends PokemonDTO {
 	 */
 
 	public Generacion9DTO(String nombre, String tipoPokemon, int id, int vida, int ataque, int defensa,
-			ArrayList<AtaqueDTO> listaAtaque, String defensaEspecial, int velocidad) {
+			String listaAtaque, String defensaEspecial, int velocidad) {
 		super(nombre, tipoPokemon, id, vida, ataque, defensa, listaAtaque, defensaEspecial, velocidad);
 		// TODO Auto-generated constructor stub
 	}

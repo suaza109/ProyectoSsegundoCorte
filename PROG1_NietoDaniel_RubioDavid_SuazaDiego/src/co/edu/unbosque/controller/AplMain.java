@@ -1,5 +1,7 @@
 package co.edu.unbosque.controller;
 
+import co.edu.unbosque.view.InicioView;
+
 /**
  * AplMain es la clase principal que inicia la ejecucion del programa.
  */
@@ -10,15 +12,8 @@ public class AplMain {
 	 * args son los argumentos de la linea de comando.
 	 */
 	public static void main(String[] args) {
-		/*
-		 * Se crea una instancia del controlador(Controller).
-		 */
-		Controller c = new Controller();
-		/*
-		 * Se llama al metodo run del Controller para iniciar la ejecucion de la aplicacion.
-		 */
-		c.run();
-
+		InicioView in = new InicioView();
+		in.setVisible(true);
 	}
 
 }
