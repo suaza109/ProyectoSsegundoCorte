@@ -24,12 +24,13 @@ import javax.swing.JList;
 import javax.swing.AbstractListModel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
+import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 
 public class InicioView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel panelPrincipal;
-	private JTable tablaPokemones;
 	private JTextField txtBusqueda;
 	private JTextField txtNombre;
 	private JTextField txtId;
@@ -40,6 +41,8 @@ public class InicioView extends JFrame {
 	private JTextField txtDefensaEspecial;
 	private JTextField txtAtaque;
 	private JTextField txtListaAtaque;
+	private JTable table;
+	private JTextField txtGeneracion;
 	
 	public InicioView() {
 		setFont(new Font("Adobe Devanagari", Font.PLAIN, 12));
@@ -54,6 +57,19 @@ public class InicioView extends JFrame {
 		panelPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelPrincipal);
 		panelPrincipal.setLayout(null);
+		
+		JLabel lblTituloGeneracion = new JLabel("Generación:");
+		lblTituloGeneracion.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTituloGeneracion.setForeground(Color.WHITE);
+		lblTituloGeneracion.setFont(new Font("Arial Black", Font.PLAIN, 14));
+		lblTituloGeneracion.setBackground(Color.LIGHT_GRAY);
+		lblTituloGeneracion.setBounds(20, 538, 161, 14);
+		panelPrincipal.add(lblTituloGeneracion);
+		
+		txtGeneracion = new JTextField();
+		txtGeneracion.setColumns(10);
+		txtGeneracion.setBounds(20, 563, 150, 20);
+		panelPrincipal.add(txtGeneracion);
 		
 		JLabel lblImagenPokemon = new JLabel("IMAGEN");
 		lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -193,26 +209,6 @@ public class InicioView extends JFrame {
 		panelPrincipal.add(txtBusqueda);
 		txtBusqueda.setColumns(10);
 		
-		tablaPokemones = new JTable();
-		tablaPokemones.setBackground(new Color(255, 255, 255));
-		tablaPokemones.setToolTipText("");
-		tablaPokemones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tablaPokemones.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"Nombre", "New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column"
-			}
-		));
-		tablaPokemones.setBounds(20, 121, 563, 96);
-		panelPrincipal.add(tablaPokemones);
-		
 		JLabel lbllistaPokemones = new JLabel("Lista De Pokemones:");
 		lbllistaPokemones.setBackground(new Color(255, 255, 255));
 		lbllistaPokemones.setVerticalTextPosition(SwingConstants.TOP);
@@ -272,6 +268,30 @@ public class InicioView extends JFrame {
 		JButton btnSubirImagen = new JButton("Subir Imagen");
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(20, 121, 521, 112);
+		panelPrincipal.add(scrollPane);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column"
+			}
+		));
+		scrollPane.setViewportView(table);
 		
 		JLabel lblImg = new JLabel("");
 		lblImg.setIcon(new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/scorbunny.jpg")));

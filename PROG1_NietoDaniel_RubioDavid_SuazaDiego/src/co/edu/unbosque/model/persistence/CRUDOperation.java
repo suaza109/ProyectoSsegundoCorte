@@ -42,6 +42,4 @@ public interface CRUDOperation {
 	/*
 	 * Crea un objeto.
 	 */
-	 
-	public void create();
 }

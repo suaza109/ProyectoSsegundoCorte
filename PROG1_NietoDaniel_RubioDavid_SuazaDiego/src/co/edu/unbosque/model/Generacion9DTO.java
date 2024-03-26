@@ -26,8 +26,8 @@ public class Generacion9DTO extends PokemonDTO {
 	 */
 
 	public Generacion9DTO(String nombre, String tipoPokemon, int id, int vida, int ataque, int defensa,
-			String listaAtaque, String defensaEspecial, int velocidad) {
-		super(nombre, tipoPokemon, id, vida, ataque, defensa, listaAtaque, defensaEspecial, velocidad);
+			String listaAtaque, String defensaEspecial, int velocidad, String fotogif, int generacion) {
+		super(nombre, tipoPokemon, id, vida, ataque, defensa, listaAtaque, defensaEspecial, velocidad,fotogif, generacion);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -42,7 +42,8 @@ public class Generacion9DTO extends PokemonDTO {
 		return "Generacion 9: \n Nombre:" + getNombre() + "\n Tipo de Pokemon:" + getTipoPokemon() + "\n Id:" + getId()
 				+ "\n Vida:" + getVida() + "\n Ataque:" + getAtaque() + "\n Defensa:" + getDefensa()
 				+ "\n Lista de Ataque:" + getListaAtaque() + "\n Defensa Especial:" + getDefensaEspecial()
-				+ "\n Velocidad:" + getVelocidad() + "\n";
+				+ "\n Velocidad:" + getVelocidad() + "\n Generación: "+ getGeneracion()
+				+"\n Url: "+getFotogif()+"\n";
 	}
 
 }

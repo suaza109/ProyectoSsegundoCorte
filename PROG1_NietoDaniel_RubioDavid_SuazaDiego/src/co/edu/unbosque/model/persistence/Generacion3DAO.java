@@ -2,7 +2,6 @@ package co.edu.unbosque.model.persistence;
 
 import java.util.ArrayList;
 
-import co.edu.unbosque.model.AtaqueDTO;
 import co.edu.unbosque.model.Generacion3DTO;
 
 /*
@@ -11,7 +10,7 @@ import co.edu.unbosque.model.Generacion3DTO;
 */
 
 public class Generacion3DAO implements CRUDOperation {
-	private ArrayList<Generacion3DTO> listaGen3;
+	private ArrayList<Generacion3DTO> lista;
 
 	/*
 	 * Constructor de la clase Generacion3DAO que inicializa la lista de la
@@ -19,7 +18,7 @@ public class Generacion3DAO implements CRUDOperation {
 	 */
 
 	public Generacion3DAO() {
-		listaGen3 = new ArrayList<>();
+		lista = new ArrayList<>();
 		// *leerDesdeArchivo();
 		leerDesdeSerializado();
 	}
@@ -29,11 +28,11 @@ public class Generacion3DAO implements CRUDOperation {
 
 	public void leerDesdeSerializado() {
 
-		Object temp = FileHandler.abrirYLeerSerializable("Pokedex.nrs");
+		Object temp = FileHandler.abrirYLeerSerializable("PokedexSerializado.Ddd");
 		if (temp == null) {
-			listaGen3 = new ArrayList<>();
+			lista = new ArrayList<>();
 		} else {
-			listaGen3 = (ArrayList<Generacion3DTO>) temp;
+			lista = (ArrayList<Generacion3DTO>) temp;
 		}
 	}
 
@@ -44,18 +43,20 @@ public class Generacion3DAO implements CRUDOperation {
 
 	public void escribirEnArchivo() {
 		String contenido = "";
-		for (int i = 0; i < listaGen3.size(); i++) {
-			contenido += listaGen3.get(i).getNombre() + ";";
-			contenido += listaGen3.get(i).getTipoPokemon() + ";";
-			contenido += listaGen3.get(i).getId() + ";";
-			contenido += listaGen3.get(i).getVida() + ";";
-			contenido += listaGen3.get(i).getAtaque() + ";";
-			contenido += listaGen3.get(i).getDefensa() + ";";
-			contenido += listaGen3.get(i).getListaAtaque() + ";";
-			contenido += listaGen3.get(i).getDefensaEspecial() + ";";
-			contenido += listaGen3.get(i).getVelocidad();
+		for (int i = 0; i < lista.size(); i++) {
+			contenido += lista.get(i).getNombre() + ";";
+			contenido += lista.get(i).getTipoPokemon() + ";";
+			contenido += lista.get(i).getId() + ";";
+			contenido += lista.get(i).getVida() + ";";
+			contenido += lista.get(i).getAtaque() + ";";
+			contenido += lista.get(i).getDefensa() + ";";
+			contenido += lista.get(i).getListaAtaque() + ";";
+			contenido += lista.get(i).getDefensaEspecial() + ";";
+			contenido += lista.get(i).getVelocidad()+ ";";
+			contenido += lista.get(i).getFotogif()+ ";";
+			contenido += lista.get(i).getGeneracion()+ ";";
 
-			if (i < listaGen3.size() - 1) {
+			if (i < lista.size() - 1) {
 				contenido += "\n";
 			}
 
@@ -71,7 +72,7 @@ public class Generacion3DAO implements CRUDOperation {
 	public void leerDesdeArchivo() {
 		String contenido = FileHandler.abrirYLeerArchivo("Pokedex.csv");
 		if (contenido.equals("")) {
-			listaGen3 = new ArrayList<>();
+			lista = new ArrayList<>();
 			return;
 		}
 
@@ -88,7 +89,9 @@ public class Generacion3DAO implements CRUDOperation {
 			temp.setListaAtaque(columnas[6]);
 			temp.setDefensaEspecial(columnas[7]);
 			temp.setVelocidad(Integer.parseInt(columnas[8]));
-			listaGen3.add(temp);
+			temp.setFotogif(columnas[9]);
+			temp.setGeneracion(Integer.parseInt(columnas[10]));
+			lista.add(temp);
 		}
 	}
 
@@ -100,9 +103,9 @@ public class Generacion3DAO implements CRUDOperation {
 	@Override
 	public void create(Object o) {
 		Generacion3DTO nuevo = (Generacion3DTO) o;
-		listaGen3.add(nuevo);
+		lista.add(nuevo);
 		escribirEnArchivo();
-		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", listaGen3);
+		FileHandler.abrirYEscribirSerializado("Pokedex.nrs", lista);
 	}
 
 	/*
@@ -116,10 +119,10 @@ public class Generacion3DAO implements CRUDOperation {
 
 	@Override
 	public boolean delete(int index) {
-		if (index < 0 || index >= listaGen3.size()) {
+		if (index < 0 || index >= lista.size()) {
 			return false;
 		} else {
-			listaGen3.remove(index);
+			lista.remove(index);
 			escribirEnArchivo();
 			return true;
 		}
@@ -133,22 +136,25 @@ public class Generacion3DAO implements CRUDOperation {
 
 	@Override
 	public boolean update(int index, Object o) {
-		if (index < 0 || index >= listaGen3.size()) {
+		if (index < 0 || index >= lista.size()) {
 			return false;
 		} else {
 			Generacion3DTO info = (Generacion3DTO) o;
-			listaGen3.get(index).setNombre(info.getNombre());
-			listaGen3.get(index).setTipoPokemon(info.getTipoPokemon());
-			listaGen3.get(index).setId(info.getId());
-			listaGen3.get(index).setVida(info.getVida());
-			listaGen3.get(index).setAtaque(info.getAtaque());
-			listaGen3.get(index).setDefensa(info.getDefensa());
-			listaGen3.get(index).setListaAtaque(info.getListaAtaque());
-			listaGen3.get(index).setDefensaEspecial(info.getDefensaEspecial());
-			listaGen3.get(index).setVelocidad(info.getVelocidad());
+			lista.get(index).setNombre(info.getNombre());
+			lista.get(index).setTipoPokemon(info.getTipoPokemon());
+			lista.get(index).setId(info.getId());
+			lista.get(index).setVida(info.getVida());
+			lista.get(index).setAtaque(info.getAtaque());
+			lista.get(index).setDefensa(info.getDefensa());
+			lista.get(index).setListaAtaque(info.getListaAtaque());
+			lista.get(index).setDefensaEspecial(info.getDefensaEspecial());
+			lista.get(index).setVelocidad(info.getVelocidad());
+			lista.get(index).setFotogif(info.getFotogif());
+			lista.get(index).setGeneracion(info.getGeneracion());
 
 		}
 		escribirEnArchivo();
+		FileHandler.abrirYEscribirSerializado("PokedexSerializado", lista);
 		return true;
 	}
 
@@ -160,17 +166,11 @@ public class Generacion3DAO implements CRUDOperation {
 	@Override
 	public String read() {
 		String exit = "";
-		for (Generacion3DTO g : listaGen3) {
+		for (Generacion3DTO g : lista) {
 			exit += g.toString() + "\n";
 		}
 
 		return exit;
-	}
-
-	@Override
-	public void create() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

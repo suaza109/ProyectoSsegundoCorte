@@ -2,7 +2,7 @@ package co.edu.unbosque.model.persistence;
 
 import java.util.ArrayList;
 
-import co.edu.unbosque.model.AtaqueDTO;
+import co.edu.unbosque.model.Generacion1DTO;
 import co.edu.unbosque.model.Generacion2DTO;
 
 /*
@@ -28,7 +28,7 @@ public class Generacion2DAO implements CRUDOperation {
 
 	public void leerDesdeSerializado() {
 
-		Object temp = FileHandler.abrirYLeerSerializable("Planeta.ds");
+		Object temp = FileHandler.abrirYLeerSerializable("PokedexSerializado.Ddd");
 		if (temp == null) {
 			lista = new ArrayList<>();
 		} else {
@@ -52,8 +52,9 @@ public class Generacion2DAO implements CRUDOperation {
 			contenido += lista.get(i).getDefensa() + ";";
 			contenido += lista.get(i).getListaAtaque() + ";";
 			contenido += lista.get(i).getDefensaEspecial() + ";";
-			contenido += lista.get(i).getVelocidad();
-
+			contenido += lista.get(i).getVelocidad() + ";";
+			contenido += lista.get(i).getFotogif() + ";";
+			contenido += lista.get(i).getGeneracion()+ ";";
 			if (i < lista.size() - 1) {
 				contenido += "\n";
 			}
@@ -87,6 +88,8 @@ public class Generacion2DAO implements CRUDOperation {
 			temp.setListaAtaque(columnas[6]);
 			temp.setDefensaEspecial(columnas[7]);
 			temp.setVelocidad(Integer.parseInt(columnas[8]));
+			temp.setFotogif(columnas[9]);
+			temp.setGeneracion(Integer.parseInt(columnas[10]));
 			lista.add(temp);
 		}
 	}
@@ -100,6 +103,8 @@ public class Generacion2DAO implements CRUDOperation {
 	public void create(Object o) {
 		Generacion2DTO info = (Generacion2DTO) o;
 		lista.add(info);
+		escribirEnArchivo();
+		FileHandler.abrirYEscribirSerializado("PokedexSerializado.Ddd", lista);
 
 	}
 
@@ -119,6 +124,7 @@ public class Generacion2DAO implements CRUDOperation {
 		} else {
 			lista.remove(index);
 			escribirEnArchivo();
+			FileHandler.abrirYEscribirSerializado("PokedexSerializado.Ddd", lista);
 			return true;
 		}
 	}
@@ -131,8 +137,25 @@ public class Generacion2DAO implements CRUDOperation {
 
 	@Override
 	public boolean update(int index, Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		Generacion2DTO info = (Generacion2DTO) o;
+		if (index < 0 || index >= lista.size()) {
+			return false;
+		} else {
+			lista.get(index).setNombre(info.getNombre());
+			lista.get(index).setTipoPokemon(info.getTipoPokemon());
+			lista.get(index).setId(info.getId());
+			lista.get(index).setVida(info.getVida());
+			lista.get(index).setAtaque(info.getAtaque());
+			lista.get(index).setDefensa(info.getDefensa());
+			lista.get(index).setListaAtaque(info.getListaAtaque());
+			lista.get(index).setDefensaEspecial(info.getDefensaEspecial());
+			lista.get(index).setVelocidad(info.getVelocidad());
+			lista.get(index).setFotogif(info.getFotogif());
+			lista.get(index).setGeneracion(info.getGeneracion());
+		}
+		escribirEnArchivo();
+		FileHandler.abrirYEscribirSerializado("PokedexSerializado.Ddd", lista);
+		return true;
 	}
 
 	/*
@@ -142,14 +165,12 @@ public class Generacion2DAO implements CRUDOperation {
 
 	@Override
 	public String read() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		String exit = "";
+		for (Generacion2DTO g : lista) {
+			exit += g.toString() + "\n";
+		}
 
-	@Override
-	public void create() {
-		// TODO Auto-generated method stub
-
+		return exit;
 	}
 
 }

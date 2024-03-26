@@ -26,6 +26,8 @@ public class PokemonDTO implements Serializable {
 	private String listaAtaque;
 	private String defensaEspecial;
 	private int velocidad;
+	private String fotogif;
+	private int generacion;
 	
 	/*
 	 * Constructor por defecto de la clase PokemonDTO.
@@ -49,7 +51,7 @@ public class PokemonDTO implements Serializable {
 	 */
 
 	public PokemonDTO(String nombre, String tipoPokemon, int id, int vida, int ataque, int defensa,
-			String listaAtaque, String defensaEspecial, int velocidad) {
+			String listaAtaque, String defensaEspecial, int velocidad, String fotogif, int generacion) {
 		super();
 		this.nombre = nombre;
 		this.tipoPokemon = tipoPokemon;
@@ -60,6 +62,8 @@ public class PokemonDTO implements Serializable {
 		this.listaAtaque = listaAtaque;
 		this.defensaEspecial = defensaEspecial;
 		this.velocidad = velocidad;
+		this.fotogif = fotogif;
+		this.generacion = generacion;
 	}
 	
 	/*
@@ -242,6 +246,22 @@ public class PokemonDTO implements Serializable {
 		this.velocidad = velocidad;
 	}
 	
+	public String getFotogif() {
+		return fotogif;
+	}
+
+	public void setFotogif(String fotogif) {
+		this.fotogif = fotogif;
+	}
+	
+	public int getGeneracion() {
+		return generacion;
+	}
+
+	public void setGeneracion(int generacion) {
+		this.generacion = generacion;
+	}
+	
 	/*
 	 * Devuelve una representacion en cadena del nombre, tipo, id, vida, ataque, defensa, lista de ataque, defensa especial y velocidad del pokemon.
 	 * 
@@ -252,7 +272,8 @@ public class PokemonDTO implements Serializable {
 	public String toString() {
 		return "Pokemon: \n Nombre:" + nombre + "\n Tipo de Pokemon:" + tipoPokemon + "\n Id:" + id + "\n Vida:" + vida
 				+ "\n Ataque:" + ptsAtaque + "\n Defensa:" + defensa + "\n Ataque Especial:" + listaAtaque
-				+ "\n Defensa Especial:" + defensaEspecial + "\n Velocidad:" + velocidad + "\n";
+				+ "\n Defensa Especial:" + defensaEspecial + "\n Velocidad:" + velocidad + "\n Generación: "+ generacion
+				+"\n Url: "+ fotogif +"\n";
 	}
 
 }
