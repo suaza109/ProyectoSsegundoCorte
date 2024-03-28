@@ -19,15 +19,15 @@ public class PokemonDTO implements Serializable {
 	
 	private String nombre;
 	private String tipoPokemon;
+	private int generacion;
 	private int id;
 	private int vida;
 	private int ptsAtaque;
 	private int defensa;
+	private int velocidad;
 	private String listaAtaque;
 	private String defensaEspecial;
-	private int velocidad;
 	private String fotogif;
-	private int generacion;
 	
 	/*
 	 * Constructor por defecto de la clase PokemonDTO.

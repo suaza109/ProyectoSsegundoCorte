@@ -1,18 +1,28 @@
 package co.edu.unbosque.controller;
+import co.edu.unbosque.model.persistence.PokemonDAO;
 
-
-/*
- 	* Esta clase es el controlador principal del programa.
- 	*/
-	class Controller {
-	/*
-	* run muestra la ventana principal de la aplicacion.
-	*/
+public class Controller {
+	private PokemonDAO pokemonDAO;
+	
 	public Controller() {
+		pokemonDAO = new PokemonDAO();
+	}
+	
+	public String crearPokemon(Object pokemon){
+		pokemonDAO.create(pokemon);
+		return "Pokemon Creado Con Exito";
+	}
+	public String eliminarPokemon(int id) {
+		if(pokemonDAO.delete(id)) {
+			return "Pokemon Eliminado con exito";
 		}
-	public void run() {
-		// TODO Auto-generated method stub
-		
+		return "Algo Salio mal";
+	}
+	public String actualizarPokemon(int id, Object pokemon) {
+		if(pokemonDAO.update(id, pokemon)) {
+			return "Pokemon Actualizado con Exito";
+		}
+		return "Algo salio Mal";
 	}
 
 }

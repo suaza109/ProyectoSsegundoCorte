@@ -1,31 +1,48 @@
 package co.edu.unbosque.view;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.AbstractListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import co.edu.unbosque.controller.Controller;
+import co.edu.unbosque.model.PokemonDTO;
+import co.edu.unbosque.model.persistence.PokemonDAO;
+import co.edu.unbosque.util.exception.NameNotValidException;
+import co.edu.unbosque.util.exception.NoValidLetterException;
+import co.edu.unbosque.util.exception.NoValidNegativeNumber;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import java.awt.Rectangle;
-import java.awt.ComponentOrientation;
-import java.awt.Point;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.JScrollBar;
-import javax.swing.JTextField;
-import javax.swing.JList;
-import javax.swing.AbstractListModel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTree;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class InicioView extends JFrame {
 
@@ -37,14 +54,19 @@ public class InicioView extends JFrame {
 	private JTextField txtVida;
 	private JTextField txtDefensa;
 	private JTextField txtVelocidad;
-	private JTextField txtTipoPokemon;
 	private JTextField txtDefensaEspecial;
 	private JTextField txtAtaque;
 	private JTextField txtListaAtaque;
 	private JTable table;
-	private JTextField txtGeneracion;
+	private PokemonDAO pokemonDAO;
+	private DefaultTableModel model;
+	private JList listaGeneracion;
+	private JList listaTipoDePokemon;
+	private Controller con;
+	private String UrlFoto;
 	
 	public InicioView() {
+		pokemonDAO = new PokemonDAO();
 		setFont(new Font("Adobe Devanagari", Font.PLAIN, 12));
 		setTitle("Pokedex\r\n");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(InicioView.class.getResource("/co/edu/unbosque/view/img/Icono.png")));
@@ -58,26 +80,28 @@ public class InicioView extends JFrame {
 		setContentPane(panelPrincipal);
 		panelPrincipal.setLayout(null);
 		
+		listaGeneracion = new JList();
+		listaGeneracion.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		listaGeneracion.setModel(new AbstractListModel() {
+			String[] values = new String[] {"1", "2", "3", "9"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		listaGeneracion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listaGeneracion.setBounds(274, 407, 56, 68);
+		panelPrincipal.add(listaGeneracion);
+		
 		JLabel lblTituloGeneracion = new JLabel("Generación:");
 		lblTituloGeneracion.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTituloGeneracion.setForeground(Color.WHITE);
 		lblTituloGeneracion.setFont(new Font("Arial Black", Font.PLAIN, 14));
 		lblTituloGeneracion.setBackground(Color.LIGHT_GRAY);
-		lblTituloGeneracion.setBounds(20, 538, 161, 14);
+		lblTituloGeneracion.setBounds(180, 407, 161, 14);
 		panelPrincipal.add(lblTituloGeneracion);
-		
-		txtGeneracion = new JTextField();
-		txtGeneracion.setColumns(10);
-		txtGeneracion.setBounds(20, 563, 150, 20);
-		panelPrincipal.add(txtGeneracion);
-		
-		JLabel lblImagenPokemon = new JLabel("IMAGEN");
-		lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
-		lblImagenPokemon.setForeground(Color.WHITE);
-		lblImagenPokemon.setFont(new Font("Arial Black", Font.PLAIN, 14));
-		lblImagenPokemon.setBackground(Color.LIGHT_GRAY);
-		lblImagenPokemon.setBounds(483, 246, 150, 150);
-		panelPrincipal.add(lblImagenPokemon);
 		
 		JLabel lblTituloFormatoAtaques = new JLabel("Ataque1, Ataque2, Ataque3, Ataque4");
 		lblTituloFormatoAtaques.setHorizontalAlignment(SwingConstants.LEFT);
@@ -88,7 +112,7 @@ public class InicioView extends JFrame {
 		panelPrincipal.add(lblTituloFormatoAtaques);
 		
 		txtListaAtaque = new JTextField();
-		txtListaAtaque.setBounds(20, 486, 436, 20);
+		txtListaAtaque.setBounds(20, 486, 613, 20);
 		panelPrincipal.add(txtListaAtaque);
 		txtListaAtaque.setColumns(10);
 		
@@ -102,11 +126,6 @@ public class InicioView extends JFrame {
 		txtVida.setBounds(20, 320, 150, 20);
 		panelPrincipal.add(txtVida);
 		
-		txtTipoPokemon = new JTextField();
-		txtTipoPokemon.setColumns(10);
-		txtTipoPokemon.setBounds(295, 430, 150, 20);
-		panelPrincipal.add(txtTipoPokemon);
-		
 		txtDefensaEspecial = new JTextField();
 		txtDefensaEspecial.setColumns(10);
 		txtDefensaEspecial.setBounds(20, 430, 150, 20);
@@ -119,17 +138,17 @@ public class InicioView extends JFrame {
 		
 		txtAtaque = new JTextField();
 		txtAtaque.setColumns(10);
-		txtAtaque.setBounds(295, 325, 150, 20);
+		txtAtaque.setBounds(180, 320, 150, 20);
 		panelPrincipal.add(txtAtaque);
 		
 		txtId = new JTextField();
 		txtId.setColumns(10);
-		txtId.setBounds(295, 269, 150, 20);
+		txtId.setBounds(180, 262, 150, 20);
 		panelPrincipal.add(txtId);
 		
 		txtVelocidad = new JTextField();
 		txtVelocidad.setColumns(10);
-		txtVelocidad.setBounds(295, 376, 150, 20);
+		txtVelocidad.setBounds(180, 376, 150, 20);
 		panelPrincipal.add(txtVelocidad);
 		
 		JLabel lblTituloTipoDePokemon = new JLabel("Tipo De Pokemon:");
@@ -137,7 +156,7 @@ public class InicioView extends JFrame {
 		lblTituloTipoDePokemon.setFont(new Font("Arial Black", Font.PLAIN, 14));
 		lblTituloTipoDePokemon.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTituloTipoDePokemon.setForeground(new Color(255, 255, 255));
-		lblTituloTipoDePokemon.setBounds(295, 405, 161, 14);
+		lblTituloTipoDePokemon.setBounds(338, 246, 161, 14);
 		panelPrincipal.add(lblTituloTipoDePokemon);
 		
 		JLabel lblTituloListaAtaques = new JLabel("Lista De Ataques:");
@@ -153,7 +172,7 @@ public class InicioView extends JFrame {
 		lblTituloId.setFont(new Font("Arial Black", Font.PLAIN, 14));
 		lblTituloId.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTituloId.setForeground(new Color(255, 255, 255));
-		lblTituloId.setBounds(295, 244, 161, 14);
+		lblTituloId.setBounds(180, 246, 161, 14);
 		panelPrincipal.add(lblTituloId);
 		
 		JLabel lblTituloDefensa = new JLabel("Defensa:");
@@ -177,7 +196,7 @@ public class InicioView extends JFrame {
 		lblTituloAtaque.setFont(new Font("Arial Black", Font.PLAIN, 14));
 		lblTituloAtaque.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTituloAtaque.setForeground(new Color(255, 255, 255));
-		lblTituloAtaque.setBounds(295, 300, 161, 14);
+		lblTituloAtaque.setBounds(180, 293, 161, 14);
 		panelPrincipal.add(lblTituloAtaque);
 		
 		JLabel lblTituloDefensaEspecial = new JLabel("Defensa Especial:");
@@ -201,7 +220,7 @@ public class InicioView extends JFrame {
 		lblTituloVelocidad.setFont(new Font("Arial Black", Font.PLAIN, 14));
 		lblTituloVelocidad.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTituloVelocidad.setForeground(new Color(255, 255, 255));
-		lblTituloVelocidad.setBounds(295, 351, 161, 14);
+		lblTituloVelocidad.setBounds(180, 351, 161, 14);
 		panelPrincipal.add(lblTituloVelocidad);
 		
 		txtBusqueda = new JTextField();
@@ -265,37 +284,198 @@ public class InicioView extends JFrame {
 		btnBuscarPokemon.setBounds(323, 83, 133, 34);
 		panelPrincipal.add(btnBuscarPokemon);
 		
+		JLabel lblImagenPokemon = new JLabel("IMAGEN");
+		lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
+		lblImagenPokemon.setForeground(Color.WHITE);
+		lblImagenPokemon.setFont(new Font("Arial Black", Font.PLAIN, 14));
+		lblImagenPokemon.setBackground(Color.LIGHT_GRAY);
+		lblImagenPokemon.setBounds(483, 246, 150, 150);
+		panelPrincipal.add(lblImagenPokemon);
+		
 		JButton btnSubirImagen = new JButton("Subir Imagen");
+		btnSubirImagen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	lblImagenPokemon.setText("");
+            	JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    // Ruta destino proporcionada por ti
+                    String rutaDestino = "C:/Users/daniel/git/ProyectoSsegundoCorte/PROG1_NietoDaniel_RubioDavid_SuazaDiego/src/co/edu/unbosque/view/img/";
+                    Path destino = Path.of(rutaDestino);
+                    try {
+                        // Copiar el archivo seleccionado a la ruta destino
+                        Path destinoCompleto = destino.resolve(selectedFile.getName());
+                        Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
+                        // Escalar imagen para que se adapte al tamaño del JLabel
+                        ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
+                        Image image = imageIcon.getImage();
+                        Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+                        lblImagenPokemon.setIcon(new ImageIcon(newImage));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 121, 521, 112);
+		scrollPane.setBounds(20, 121, 663, 112);
 		panelPrincipal.add(scrollPane);
 		
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column"
-			}
-		));
+		
+		model = new DefaultTableModel();
+		table.setModel(model);
+		
+		model.addColumn("Nombre");
+		model.addColumn("Tipo");
+		model.addColumn("Generación");
+		model.addColumn("Id");
+		model.addColumn("Vida");
+		model.addColumn("Ataque");
+		model.addColumn("Defensa");
+		model.addColumn("Velocidad");
+		model.addColumn("Ataques Especiales");
+		model.addColumn("Defensa Especial");
+		llenarTabla();
 		scrollPane.setViewportView(table);
+		
+		JScrollPane scrollPaneListaTipoDePokemon = new JScrollPane();
+		scrollPaneListaTipoDePokemon.setBounds(340, 262, 117, 175);
+		panelPrincipal.add(scrollPaneListaTipoDePokemon);
+		
+		listaTipoDePokemon = new JList();
+		scrollPaneListaTipoDePokemon.setViewportView(listaTipoDePokemon);
+		listaTipoDePokemon.setModel(new AbstractListModel() {
+			String[] values = new String[] {"Acero", "Agua", "Bicho", "Dragón", 
+					"Eléctrico", "Fantasma", "Fuego", "Hada", "Hielo", "Lucha", "Normal", "Planta",
+					"Psíquico", "Roca", "Siniestro", "Tierra", "Volador"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		listaTipoDePokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listaTipoDePokemon.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
 		
 		JLabel lblImg = new JLabel("");
 		lblImg.setIcon(new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/scorbunny.jpg")));
 		lblImg.setBounds(0, 0, 1176, 681);
 		panelPrincipal.add(lblImg);
+	}
+	
+	public void llenarTabla() {
+		ArrayList<PokemonDTO> listaPokemones = pokemonDAO.getLista();
+		for (PokemonDTO pokemonDTO : listaPokemones) {
+			Object[] fila = new Object[10];
+			fila[0] = pokemonDTO.getNombre();
+			fila[1] = pokemonDTO.getTipoPokemon();
+			fila[2] = pokemonDTO.getGeneracion();
+			fila[3] = pokemonDTO.getId();
+			fila[4] = pokemonDTO.getVida();
+			fila[5] = pokemonDTO.getAtaque();
+			fila[6] = pokemonDTO.getDefensa();
+			fila[7] = pokemonDTO.getVelocidad();
+			fila[8] = pokemonDTO.getListaAtaque();
+			fila[9] = pokemonDTO.getDefensaEspecial();
+			model.addRow(fila);
+		}
+	}
+	
+	//Si es un Numero Negativo salta Excepcion
+	public void checkNegativeNumber(String check) throws NoValidNegativeNumber {
+		int checkInt = Integer.parseInt(check);
+		if(checkInt < 0 ) {
+			throw new NoValidNegativeNumber();
+		}
+	}
+	
+	//Si es letra salta Exepcion
+	public void checkNoValidLetter(String check) throws NoValidLetterException {
+		Pattern p = Pattern.compile("[a-zA-z]");
+		Matcher m = p.matcher(check);
+		if(m.find()) {
+			throw new NoValidLetterException();
+		}
+	}
+	// Si es numero salta Execpion
+	public void checkNoValidNumber(String check) throws NameNotValidException{
+		Pattern p = Pattern.compile("[^a-zA-z]");
+		Matcher m = p.matcher(check);
+		if(m.find()) {
+			throw new NameNotValidException();
+		}
+	}
+	
+	public PokemonDTO agarrarDato() {
+		
+		String nombre = "";
+		String tipoPokemon = "";
+		int generacion = 0;
+		int id = 0;
+		int vida = 0;
+		int ataque = 0;
+		int defensa = 0;
+		int velocidad = 0 ;
+		String listaAtaque = "";
+		String defensaEsp = "";
+		
+		try {
+			nombre = txtNombre.getText();
+			checkNoValidNumber(nombre);
+			checkNegativeNumber(nombre);
+			
+			tipoPokemon = listaTipoDePokemon.getSelectedValue().toString();
+			
+			String generacionStr = listaGeneracion.getSelectedValue().toString();
+			checkNegativeNumber(generacionStr);
+			checkNoValidLetter(generacionStr);
+			String idStr = txtId.getText();
+			checkNegativeNumber(idStr);
+			checkNoValidLetter(idStr);
+			String vidaStr = txtVida.getText();
+			checkNegativeNumber(vidaStr);
+			checkNoValidLetter(vidaStr);
+			String ataqueStr = txtAtaque.getText();
+			checkNegativeNumber(ataqueStr);
+			checkNoValidLetter(ataqueStr);
+			String defensaStr = txtDefensa.getText();
+			checkNegativeNumber(defensaStr);
+			checkNoValidLetter(defensaStr);
+			String velocidadStr = txtVelocidad.getText();
+			checkNegativeNumber(velocidadStr);
+			checkNoValidLetter(velocidadStr);
+			
+			 generacion = Integer.parseInt(generacionStr);
+			 id = Integer.parseInt(idStr);
+			 vida = Integer.parseInt(vidaStr);
+			 ataque = Integer.parseInt(ataqueStr);
+			 defensa = Integer.parseInt(defensaStr);
+			 velocidad = Integer.parseInt(velocidadStr);
+			
+			listaAtaque = txtListaAtaque.getText();
+			checkNoValidNumber(listaAtaque);
+			checkNegativeNumber(listaAtaque);
+			defensaEsp = txtDefensaEspecial.getText();
+			checkNoValidNumber(defensaEsp);
+			checkNegativeNumber(defensaEsp);
+			
+			
+		} catch (NameNotValidException e) {
+			JOptionPane.showMessageDialog(null, "No se aceptan numeros en este campo");
+		} catch (co.edu.unbosque.util.exception.NoValidNegativeNumber e) {
+			JOptionPane.showMessageDialog(null, "No se aceptan numeros negativos en este campo");
+		} catch (NoValidLetterException e) {
+			JOptionPane.showMessageDialog(null, "No se aceptan Letras en este campo");
+		}
+		
+		return new PokemonDTO(nombre, tipoPokemon, id, vida, ataque,
+				defensa, listaAtaque, defensaEsp, velocidad, UrlFoto, generacion);
 	}
 }
