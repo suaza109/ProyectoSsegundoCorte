@@ -1,7 +1,9 @@
 package co.edu.unbosque.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -59,14 +61,17 @@ public class InicioView extends JFrame {
 	private JTextField txtListaAtaque;
 	private JTable table;
 	private PokemonDAO pokemonDAO;
+	private CardPokemon cp;
 	private DefaultTableModel model;
 	private JList listaGeneracion;
 	private JList listaTipoDePokemon;
 	private Controller con;
 	private String UrlFoto;
+	private JLabel lblImg;
+	private JLabel lblImagenPokemon;
+	private String nuevaUrl;
 	
 	public InicioView() {
-		pokemonDAO = new PokemonDAO();
 		setFont(new Font("Adobe Devanagari", Font.PLAIN, 12));
 		setTitle("Pokedex\r\n");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(InicioView.class.getResource("/co/edu/unbosque/view/img/Icono.png")));
@@ -79,6 +84,10 @@ public class InicioView extends JFrame {
 		panelPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelPrincipal);
 		panelPrincipal.setLayout(null);
+		
+		pokemonDAO = new PokemonDAO();
+		con = new Controller();
+		cp = new CardPokemon();
 		
 		listaGeneracion = new JList();
 		listaGeneracion.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -256,18 +265,51 @@ public class InicioView extends JFrame {
 		panelPrincipal.add(lblTitulo);
 		
 		JButton btnCrear = new JButton("Crear Pokemon");
+		btnCrear.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, con.crearPokemon(agarrarDatos()));
+				actualizarTabla();
+				limpiarcampos();
+			}
+		});
 		btnCrear.setBounds(83, 615, 245, 55);
 		panelPrincipal.add(btnCrear);
 		
 		JButton btnEliminar = new JButton("Eliminar Pokemon");
+		btnEliminar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, con.eliminarPokemon(table.getSelectedRow()));
+				eliminarFila();
+				limpiarcampos();
+			}
+		});
 		btnEliminar.setBounds(338, 615, 245, 55);
 		panelPrincipal.add(btnEliminar);
 		
 		JButton btnActualizar = new JButton("Actualizar Pokemon");
+		btnActualizar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, con.actualizarPokemon(table.getSelectedRow(), agarrarDatos()));
+				recargar();
+				limpiarcampos();
+			}
+		});
 		btnActualizar.setBounds(593, 615, 245, 55);
 		panelPrincipal.add(btnActualizar);
 		
 		JButton btnSeleccionarPokemon = new JButton("SeleccionarPokemon");
+		btnSeleccionarPokemon.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cp.setVisible(true);
+				seleccionarPokemon();
+				llenarCard();
+			}
+		});
 		btnSeleccionarPokemon.setBounds(852, 615, 245, 55);
 		panelPrincipal.add(btnSeleccionarPokemon);
 		
@@ -280,16 +322,21 @@ public class InicioView extends JFrame {
 		lblNombretipogeneracion.setBounds(462, 81, 221, 34);
 		panelPrincipal.add(lblNombretipogeneracion);
 		
-		JButton btnBuscarPokemon = new JButton("Buscar Pokemon");
-		btnBuscarPokemon.setBounds(323, 83, 133, 34);
-		panelPrincipal.add(btnBuscarPokemon);
-		
-		JLabel lblImagenPokemon = new JLabel("IMAGEN");
-		lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
-		lblImagenPokemon.setForeground(Color.WHITE);
-		lblImagenPokemon.setFont(new Font("Arial Black", Font.PLAIN, 14));
-		lblImagenPokemon.setBackground(Color.LIGHT_GRAY);
-		lblImagenPokemon.setBounds(483, 246, 150, 150);
+		lblImagenPokemon = new JLabel();
+        lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
+        lblImagenPokemon.setForeground(Color.WHITE);
+        lblImagenPokemon.setFont(new Font("Arial Black", Font.PLAIN, 14));
+        lblImagenPokemon.setBackground(Color.LIGHT_GRAY);
+        lblImagenPokemon.setBounds(483, 246, 150, 150);
+
+        // Obtener la imagen y ajustar su tamaño
+        ImageIcon icono = new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/Icono.png"));
+        Image imagen = icono.getImage();
+        Image imagenEscalada = imagen.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
+
+        // Establecer el icono escalado en el JLabel
+        lblImagenPokemon.setIcon(iconoEscalado);
 		panelPrincipal.add(lblImagenPokemon);
 		
 		JButton btnSubirImagen = new JButton("Subir Imagen");
@@ -312,6 +359,7 @@ public class InicioView extends JFrame {
                         Image image = imageIcon.getImage();
                         Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
                         lblImagenPokemon.setIcon(new ImageIcon(newImage));
+                        UrlFoto = String.valueOf(destinoCompleto);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -320,6 +368,16 @@ public class InicioView extends JFrame {
         });
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
+		
+		JButton btnActualizarTabla = new JButton("Actualizar Tabla");
+		btnActualizarTabla.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnActualizarTabla.setBounds(323, 83, 133, 34);
+		panelPrincipal.add(btnActualizarTabla);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(20, 121, 663, 112);
@@ -364,7 +422,7 @@ public class InicioView extends JFrame {
 		listaTipoDePokemon.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		
-		JLabel lblImg = new JLabel("");
+		lblImg = new JLabel("");
 		lblImg.setIcon(new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/scorbunny.jpg")));
 		lblImg.setBounds(0, 0, 1176, 681);
 		panelPrincipal.add(lblImg);
@@ -413,8 +471,7 @@ public class InicioView extends JFrame {
 		}
 	}
 	
-	public PokemonDTO agarrarDato() {
-		
+public PokemonDTO agarrarDatos() {
 		String nombre = "";
 		String tipoPokemon = "";
 		int generacion = 0;
@@ -429,28 +486,26 @@ public class InicioView extends JFrame {
 		try {
 			nombre = txtNombre.getText();
 			checkNoValidNumber(nombre);
-			checkNegativeNumber(nombre);
 			
 			tipoPokemon = listaTipoDePokemon.getSelectedValue().toString();
-			
 			String generacionStr = listaGeneracion.getSelectedValue().toString();
-			checkNegativeNumber(generacionStr);
 			checkNoValidLetter(generacionStr);
+			checkNegativeNumber(generacionStr);
 			String idStr = txtId.getText();
-			checkNegativeNumber(idStr);
 			checkNoValidLetter(idStr);
+			checkNegativeNumber(idStr);
 			String vidaStr = txtVida.getText();
-			checkNegativeNumber(vidaStr);
 			checkNoValidLetter(vidaStr);
+			checkNegativeNumber(vidaStr);
 			String ataqueStr = txtAtaque.getText();
-			checkNegativeNumber(ataqueStr);
 			checkNoValidLetter(ataqueStr);
+			checkNegativeNumber(ataqueStr);
 			String defensaStr = txtDefensa.getText();
-			checkNegativeNumber(defensaStr);
 			checkNoValidLetter(defensaStr);
+			checkNegativeNumber(defensaStr);
 			String velocidadStr = txtVelocidad.getText();
-			checkNegativeNumber(velocidadStr);
 			checkNoValidLetter(velocidadStr);
+			checkNegativeNumber(velocidadStr);
 			
 			 generacion = Integer.parseInt(generacionStr);
 			 id = Integer.parseInt(idStr);
@@ -461,15 +516,13 @@ public class InicioView extends JFrame {
 			
 			listaAtaque = txtListaAtaque.getText();
 			checkNoValidNumber(listaAtaque);
-			checkNegativeNumber(listaAtaque);
 			defensaEsp = txtDefensaEspecial.getText();
 			checkNoValidNumber(defensaEsp);
-			checkNegativeNumber(defensaEsp);
 			
 			
 		} catch (NameNotValidException e) {
 			JOptionPane.showMessageDialog(null, "No se aceptan numeros en este campo");
-		} catch (co.edu.unbosque.util.exception.NoValidNegativeNumber e) {
+		} catch (NoValidNegativeNumber e) {
 			JOptionPane.showMessageDialog(null, "No se aceptan numeros negativos en este campo");
 		} catch (NoValidLetterException e) {
 			JOptionPane.showMessageDialog(null, "No se aceptan Letras en este campo");
@@ -477,5 +530,126 @@ public class InicioView extends JFrame {
 		
 		return new PokemonDTO(nombre, tipoPokemon, id, vida, ataque,
 				defensa, listaAtaque, defensaEsp, velocidad, UrlFoto, generacion);
+	}
+
+public void actualizarTabla() {
+		Object[] fila = new Object[10];
+		fila[0] = agarrarDatos().getNombre();
+		fila[1] = agarrarDatos().getTipoPokemon();
+		fila[2] = agarrarDatos().getGeneracion();
+		fila[3] = agarrarDatos().getId();
+		fila[4] = agarrarDatos().getVida();
+		fila[5] = agarrarDatos().getAtaque();
+		fila[6] = agarrarDatos().getDefensa();
+		fila[7] = agarrarDatos().getVelocidad();
+		fila[8] = agarrarDatos().getListaAtaque();
+		fila[9] = agarrarDatos().getDefensaEspecial();
+		model.addRow(fila);
+	}
+	
+public void limpiarcampos() {
+		txtNombre.setText("");
+		txtId.setText("");
+		txtVida.setText("");
+		txtAtaque.setText("");
+		txtDefensa.setText("");
+		txtVelocidad.setText("");
+		txtListaAtaque.setText("");
+		txtDefensaEspecial.setText("");
+		
+		ImageIcon icono = new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/Icono.png"));
+        Image imagen = icono.getImage();
+        Image imagenEscalada = imagen.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
+        lblImagenPokemon.setIcon(iconoEscalado);
+	}
+	
+public void eliminarFila() {
+		model.removeRow(table.getSelectedRow());
+	}
+	
+public void seleccionarPokemon() {
+		int filaSelecionada = table.getSelectedRow();
+		if (filaSelecionada != -1) {
+			txtNombre.setText((String) table.getValueAt(filaSelecionada, 0));
+			txtId.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 3)));
+			txtVida.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 4)));
+			txtAtaque.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 5)));
+			txtDefensa.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 6)));
+			txtVelocidad.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 7)));
+			txtListaAtaque.setText((String) table.getValueAt(filaSelecionada, 8));
+			txtDefensaEspecial.setText((String) table.getValueAt(filaSelecionada, 9));
+			
+			
+			ArrayList<PokemonDTO> listaPokemones = pokemonDAO.getLista();
+			String url = listaPokemones.get(filaSelecionada).getFotogif();
+			nuevaUrl = url.replace("\\", "/");
+			ImageIcon icono = new ImageIcon(nuevaUrl);
+			Image imagen = icono.getImage();
+			int ancho = lblImagenPokemon.getWidth();
+			int alto = lblImagenPokemon.getHeight();
+			Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+			lblImagenPokemon.setIcon(new ImageIcon(imagenEscalada));
+			
+			
+        }else {
+        	JOptionPane.showMessageDialog(null, "Debes selecionar una pokemon en la tabla");
+        }
+	}
+
+public void llenarCard() {
+	//Llenar la Card
+	String nombre = "";
+	String tipoPokemon = "";
+	int generacion = 0;
+	int id = 0;
+	int vida = 0;
+	int ataque = 0;
+	int defensa = 0;
+	int velocidad = 0 ;
+	String listaAtaque = "";
+	String defensaEsp = "";
+	
+	nombre = txtNombre.getText();
+	int filaSelecionada = table.getSelectedRow();
+	if (filaSelecionada != -1) {
+		tipoPokemon = (String) table.getValueAt(filaSelecionada, 1);
+		generacion = (int) table.getValueAt(filaSelecionada, 2);
+	}
+	String idStr = txtId.getText();
+	String vidaStr = txtVida.getText();
+	String ataqueStr = txtAtaque.getText();
+	String defensaStr = txtDefensa.getText();
+	String velocidadStr = txtVelocidad.getText();
+	
+	id = Integer.parseInt(idStr);
+	vida = Integer.parseInt(vidaStr);
+	ataque = Integer.parseInt(ataqueStr);
+	defensa = Integer.parseInt(defensaStr);
+	velocidad = Integer.parseInt(velocidadStr);
+	listaAtaque = txtListaAtaque.getText();
+	defensaEsp = txtDefensaEspecial.getText();
+	
+	cp.llenarCard(nombre, tipoPokemon, generacion, id, vida,
+			ataque, defensa, velocidad, listaAtaque, defensaEsp, nuevaUrl);
+}
+
+public void recargar() {
+	int filaSelecionada = table.getSelectedRow();
+	if (filaSelecionada != -1) {
+		model.setValueAt(txtNombre.getText(), filaSelecionada, 0);
+		model.setValueAt(listaTipoDePokemon.getSelectedValue(), filaSelecionada, 1);
+		model.setValueAt(listaGeneracion.getSelectedValue(),filaSelecionada, 2);
+		model.setValueAt(Integer.parseInt(txtId.getText()), filaSelecionada, 3);
+		model.setValueAt(Integer.parseInt(txtVida.getText()), filaSelecionada, 4);
+		model.setValueAt(Integer.parseInt(txtAtaque.getText()), filaSelecionada, 5);
+		model.setValueAt(Integer.parseInt(txtDefensa.getText()), filaSelecionada, 6);
+		model.setValueAt(Integer.parseInt(txtVelocidad.getText()), filaSelecionada, 7);
+		model.setValueAt(txtListaAtaque.getText(), filaSelecionada, 8);
+		model.setValueAt(txtDefensaEspecial.getText(), filaSelecionada, 9);
+		
+    	}else {
+    	JOptionPane.showMessageDialog(null, "Debes selecionar una pokemon en la tabla");
+    		}
 	}
 }
