@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 /*
@@ -376,31 +377,34 @@ public class InicioView extends JFrame {
 
 		JButton btnSubirImagen = new JButton("Subir Imagen");
 		btnSubirImagen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				lblImagenPokemon.setText("");
-				JFileChooser fileChooser = new JFileChooser();
-				int returnValue = fileChooser.showOpenDialog(null);
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = fileChooser.getSelectedFile();
-					// Ruta destino proporcionada por ti
-					String rutaDestino = "C:/Users/daniel/git/ProyectoSsegundoCorte/PROG1_NietoDaniel_RubioDavid_SuazaDiego/src/co/edu/unbosque/view/img/";
-					Path destino = Path.of(rutaDestino);
-					try {
-						// Copiar el archivo seleccionado a la ruta destino
-						Path destinoCompleto = destino.resolve(selectedFile.getName());
-						Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
-						// Escalar imagen para que se adapte al tamaño del JLabel
-						ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
-						Image image = imageIcon.getImage();
-						Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(),
-								lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
-						lblImagenPokemon.setIcon(new ImageIcon(newImage));
-						UrlFoto = String.valueOf(destinoCompleto);
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        lblImagenPokemon.setText("");
+		        JFileChooser fileChooser = new JFileChooser();
+		        int returnValue = fileChooser.showOpenDialog(null);
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		            File selectedFile = fileChooser.getSelectedFile();
+		            // Ruta relativa dentro del proyecto
+		            String rutaDestino = "src/co/edu/unbosque/view/img/";
+		            Path destino = Paths.get(rutaDestino);
+		            try {
+		                // Obtener la ruta absoluta del directorio actual
+		                Path rutaBase = Paths.get("").toAbsolutePath();
+		                // Combinar la ruta base con la ruta de destino
+		                Path destinoCompleto = rutaBase.resolve(destino).resolve(selectedFile.getName());
+		                // Copiar el archivo seleccionado a la ruta destino
+		                Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
+		                // Escalar imagen para que se adapte al tamaño del JLabel
+		                ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
+		                Image image = imageIcon.getImage();
+		                Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(),
+		                        lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+		                lblImagenPokemon.setIcon(new ImageIcon(newImage));
+		                UrlFoto = String.valueOf(destinoCompleto);
+		            } catch (IOException ex) {
+		                ex.printStackTrace();
+		            }
+		        }
+		    }
 		});
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
