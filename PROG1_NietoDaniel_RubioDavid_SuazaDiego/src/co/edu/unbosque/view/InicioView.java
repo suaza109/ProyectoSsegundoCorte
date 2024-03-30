@@ -656,7 +656,7 @@ public class InicioView extends JFrame {
 			Image imagen = icono.getImage();
 			int ancho = lblImagenPokemon.getWidth();
 			int alto = lblImagenPokemon.getHeight();
-			Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+			Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_DEFAULT);
 			lblImagenPokemon.setIcon(new ImageIcon(imagenEscalada));
 
 		} else {

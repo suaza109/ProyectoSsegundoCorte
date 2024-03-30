@@ -179,7 +179,7 @@ public class CardPokemon extends JFrame {
 		Image imagen = icono.getImage();
 		int ancho = lblimg.getWidth();
 		int alto = lblimg.getHeight();
-		Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+		Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_DEFAULT);
 
 		// Establecer la imagen escalada en el JLabel
 		lblimg.setIcon(new ImageIcon(imagenEscalada));
