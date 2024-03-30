@@ -2,21 +2,21 @@ package co.edu.unbosque.controller;
 
 import co.edu.unbosque.model.persistence.PokemonDAO;
 
-/*
+/**
  * La clase Controller es el controlador principal del programa.
  * Crea el objeto pokemonDAO que pertenece al DAO de pokemon.
  */
 public class Controller {
 	private PokemonDAO pokemonDAO;
 
-	/*
+	/**
 	 * Constructor de la clase , inicializa el objeto pokemonDAO
 	 */
 	public Controller() {
 		pokemonDAO = new PokemonDAO();
 	}
 
-	/*
+	/**
 	 * Este metodo crea un pokemon y retorna un mensaje.
 	 * 
 	 * @param pokemon Objeto del pokemon a crear.
@@ -28,7 +28,7 @@ public class Controller {
 		return "Pokemon Creado Con Exito";
 	}
 
-	/*
+	/**
 	 * Este metodo elimina un pokemon mediante el id y retorna un mensaje si este es
 	 * eliminado correctamente, y otro si no se pudo eliminar.
 	 * 
@@ -45,7 +45,7 @@ public class Controller {
 		return "Algo Salio mal";
 	}
 
-	/*
+	/**
 	 * Este metodo actualiza un pokemon mediante el id y el objeto de este, y
 	 * retorna un mensaje para cada caso.
 	 * 

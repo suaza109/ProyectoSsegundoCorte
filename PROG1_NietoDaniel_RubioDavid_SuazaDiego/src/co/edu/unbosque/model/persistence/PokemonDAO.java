@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import co.edu.unbosque.model.PokemonDTO;
 
+/**
+ * PokemonDAO Se realiza las operaciones basicas con un pokemon.
+ */
 public class PokemonDAO implements CRUDOperation {
 	private ArrayList<PokemonDTO> lista;
 
-	/*
+	/**
 	 * Constructor de la clase PokemonDAO que inicializa la lista de pokemones y
 	 * utiliza la funcion de leer desde serializado.
 	 */
@@ -18,7 +21,7 @@ public class PokemonDAO implements CRUDOperation {
 		leerDesdeSerializado();
 	}
 
-	/*
+	/**
 	 * Lee la lista de de pokemones mediante un archivo serializado.
 	 */
 
@@ -32,7 +35,7 @@ public class PokemonDAO implements CRUDOperation {
 		}
 	}
 
-	/*
+	/**
 	 * La funcion atrae todo lo que se haya digitado en consola a contenido , y en
 	 * contenido crea un archivo y lo escribe con lo que hay en el contenido.
 	 */
@@ -49,7 +52,7 @@ public class PokemonDAO implements CRUDOperation {
 			contenido += lista.get(i).getListaAtaque() + ";";
 			contenido += lista.get(i).getDefensaEspecial() + ";";
 			contenido += lista.get(i).getVelocidad() + ";";
-			contenido += lista.get(i).getFotogif() + ";";
+			contenido += lista.get(i).getFotoGif() + ";";
 			contenido += lista.get(i).getGeneracion() + ";";
 
 			if (i < lista.size() - 1) {
@@ -61,7 +64,7 @@ public class PokemonDAO implements CRUDOperation {
 		FileHandler.abrirYEscribirArchivo("Pokedex.csv", contenido);
 	}
 
-	/*
+	/**
 	 * Lee la lista de pokemones desde un archivo de texto.
 	 */
 
@@ -85,7 +88,7 @@ public class PokemonDAO implements CRUDOperation {
 			temp.setListaAtaque(columnas[6]);
 			temp.setDefensaEspecial(columnas[7]);
 			temp.setVelocidad(Integer.parseInt(columnas[8]));
-			temp.setFotogif(columnas[9]);
+			temp.setFotoGif(columnas[9]);
 			temp.setGeneracion(Integer.parseInt(columnas[10]));
 
 			lista.add(temp);
@@ -93,7 +96,7 @@ public class PokemonDAO implements CRUDOperation {
 		}
 	}
 
-	/*
+	/**
 	 * Este metodo agrega un metodo PokemonDTO a la lista de pokemones en el DAO y
 	 * escribe los cambios en un archivo.
 	 */
@@ -107,13 +110,13 @@ public class PokemonDAO implements CRUDOperation {
 
 	}
 
-	/*
+	/**
 	 * Este metodo elimina un pokemon de la lista.
 	 * 
 	 * @param index
 	 * 
 	 * @return true si el pokemon se elimino correctamente, false si la posicion no
-	 * existe.
+	 *         existe.
 	 */
 
 	@Override
@@ -128,7 +131,7 @@ public class PokemonDAO implements CRUDOperation {
 		}
 	}
 
-	/*
+	/**
 	 * Este metodo actualiza un pokemon de la lista en la posicion especificada por
 	 * index con los atributos de otro objeto PokemonDTO.Luego, guarda los datos en
 	 * el archivo.
@@ -149,7 +152,7 @@ public class PokemonDAO implements CRUDOperation {
 			lista.get(index).setListaAtaque(info.getListaAtaque());
 			lista.get(index).setDefensaEspecial(info.getDefensaEspecial());
 			lista.get(index).setVelocidad(info.getVelocidad());
-			lista.get(index).setFotogif(info.getFotogif());
+			lista.get(index).setFotoGif(info.getFotoGif());
 			lista.get(index).setGeneracion(info.getGeneracion());
 
 		}
@@ -158,7 +161,7 @@ public class PokemonDAO implements CRUDOperation {
 		return true;
 	}
 
-	/*
+	/**
 	 * Este método devuelve una cadena que contiene una representación de todos los
 	 * pokemones almacenados en el DAO.
 	 */
@@ -172,6 +175,12 @@ public class PokemonDAO implements CRUDOperation {
 
 		return exit;
 	}
+
+	/**
+	 * Se obtiene la lista de PokemonDTO
+	 * 
+	 * @return lista
+	 */
 
 	public ArrayList<PokemonDTO> getLista() {
 		return lista;

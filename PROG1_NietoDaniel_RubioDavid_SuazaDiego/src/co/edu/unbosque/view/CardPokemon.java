@@ -1,9 +1,7 @@
 package co.edu.unbosque.view;
 
-import java.awt.EventQueue;
 import java.awt.Image;
-import java.awt.Window;
-
+import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,9 +9,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-/*
- * La clase CardPokemon se utiliza para la muestra de la vewntana que contiene la carta del pokemon que seleccionamos.
- * Incluye sus diferentes caracteristicas y atributps.
+/**
+ * La clase CardPokemon se utiliza para la muestra de la vewntana que contiene
+ * la carta del pokemon que seleccionamos. Incluye sus diferentes
+ * caracteristicas y atributos.
  */
 public class CardPokemon extends JFrame {
 
@@ -31,13 +30,15 @@ public class CardPokemon extends JFrame {
 	private JLabel lblVelocidad;
 	private JLabel lblDefensaEspecial;
 
-	/*
+	/**
 	 * Constructor por defecto de CardPokemon que crea y muestra las diferentes
 	 * partes de la vista de la carta.
 	 */
 	public CardPokemon() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 509, 364);
+		setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(CardPokemon.class.getResource("/co/edu/unbosque/view/img/Icono.png")));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -135,31 +136,31 @@ public class CardPokemon extends JFrame {
 
 	}
 
-	/*
+	/**
 	 * Metodo llenar card que se utiliza para mostrar completamente la carta del
 	 * pokemon que se selecciono.
 	 * 
-	 * @param nombre 			 es el nombre del pokemon.
+	 * @param nombre       es el nombre del pokemon.
 	 * 
-	 * @param tipoPokemon	     es el tipo de pokemon.
+	 * @param tipoPokemon  es el tipo de pokemon.
 	 * 
-	 * @param generacion 	     es la genercion del pokemon.
+	 * @param generacion   es la genercion del pokemon.
 	 * 
-	 * @param id 			     es el id del pokemon.
+	 * @param id           es el id del pokemon.
 	 * 
-	 * @param vida 				 es la vida del pokemon.
+	 * @param vida         es la vida del pokemon.
 	 * 
-	 * @param ataque 			 es el ataque del pokemon.
+	 * @param ataque       es el ataque del pokemon.
 	 * 
-	 * @param defensa 			 es la defensa del pokemon.
+	 * @param defensa      es la defensa del pokemon.
 	 * 
-	 * @param velocidad			 es la velocidad del pokemon
+	 * @param velocidad    es la velocidad del pokemon
 	 * 
-	 * @param listaAtaques		 es la lista de ataques del pokemon.
+	 * @param listaAtaques es la lista de ataques del pokemon.
 	 * 
-	 * @param DefensaEsp 		 es la defensa especial del pokemon.
+	 * @param DefensaEsp   es la defensa especial del pokemon.
 	 * 
-	 * @param foto				 es la foto del pokemon.
+	 * @param foto         es la foto del pokemon.
 	 */
 	public void llenarCard(String nombre, String tipoPokemon, int generacion, int id, int vida, int ataque, int defensa,
 			int velocidad, String listaAtaques, String DefensaEsp, String foto) {
@@ -179,7 +180,7 @@ public class CardPokemon extends JFrame {
 		Image imagen = icono.getImage();
 		int ancho = lblimg.getWidth();
 		int alto = lblimg.getHeight();
-		Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+		Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_DEFAULT);
 
 		// Establecer la imagen escalada en el JLabel
 		lblimg.setIcon(new ImageIcon(imagenEscalada));

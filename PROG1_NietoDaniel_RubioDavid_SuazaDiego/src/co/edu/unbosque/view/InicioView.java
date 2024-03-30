@@ -44,11 +44,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-/*
- * La clase InicioView se encarga de mostrar la ventana principal del aplicativo.
- * Contien los recuadros y paneles de todas las caracteristicas de los pokemones.
+/**
+ * La clase InicioView se encarga de mostrar la ventana principal del
+ * aplicativo. Contien los recuadros y paneles de todas las caracteristicas de
+ * los pokemones.
  */
 public class InicioView extends JFrame {
 
@@ -75,7 +77,7 @@ public class InicioView extends JFrame {
 	private JLabel lblImagenPokemon;
 	private String nuevaUrl;
 
-	/*
+	/**
 	 * El constructor de la clase InicioView se encarga de inicializar y mostrar
 	 * toda la vista de la ventana principal del aplicativo.
 	 */
@@ -278,7 +280,7 @@ public class InicioView extends JFrame {
 
 		JButton btnCrear = new JButton("Crear Pokemon");
 		btnCrear.addActionListener(new ActionListener() {
-			/*
+			/**
 			 * Este metodo actualiza y limpia los campos de la tabla.
 			 * 
 			 * @param e nombre del objeto para controlar este evento.
@@ -296,7 +298,7 @@ public class InicioView extends JFrame {
 		JButton btnEliminar = new JButton("Eliminar Pokemon");
 		btnEliminar.addActionListener(new ActionListener() {
 
-			/*
+			/**
 			 * Este metodo elimina una fila y limpia los campos de la tabla.
 			 * 
 			 * @param e nombre del objeto para controlar este evento.
@@ -314,7 +316,7 @@ public class InicioView extends JFrame {
 		JButton btnActualizar = new JButton("Actualizar Pokemon");
 		btnActualizar.addActionListener(new ActionListener() {
 
-			/*
+			/**
 			 * Este metodo recarga y limpia los campos de la tabla.
 			 * 
 			 * @param e nombre del objeto para controlar este evento.
@@ -332,7 +334,7 @@ public class InicioView extends JFrame {
 		JButton btnSeleccionarPokemon = new JButton("SeleccionarPokemon");
 		btnSeleccionarPokemon.addActionListener(new ActionListener() {
 
-			/*
+			/**
 			 * Este metodo selecciona un pokemon y llena su tarjeta.
 			 * 
 			 * @param e nombre del objeto para controlar este evento.
@@ -382,12 +384,15 @@ public class InicioView extends JFrame {
 				int returnValue = fileChooser.showOpenDialog(null);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
-					// Ruta destino proporcionada por ti
-					String rutaDestino = "C:/Users/daniel/git/ProyectoSsegundoCorte/PROG1_NietoDaniel_RubioDavid_SuazaDiego/src/co/edu/unbosque/view/img/";
-					Path destino = Path.of(rutaDestino);
+					// Ruta relativa dentro del proyecto
+					String rutaDestino = "src/co/edu/unbosque/view/img/";
+					Path destino = Paths.get(rutaDestino);
 					try {
+						// Obtener la ruta absoluta del directorio actual
+						Path rutaBase = Paths.get("").toAbsolutePath();
+						// Combinar la ruta base con la ruta de destino
+						Path destinoCompleto = rutaBase.resolve(destino).resolve(selectedFile.getName());
 						// Copiar el archivo seleccionado a la ruta destino
-						Path destinoCompleto = destino.resolve(selectedFile.getName());
 						Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
 						// Escalar imagen para que se adapte al tamaño del JLabel
 						ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
@@ -408,7 +413,7 @@ public class InicioView extends JFrame {
 		JButton btnActualizarTabla = new JButton("Actualizar Tabla");
 		btnActualizarTabla.addActionListener(new ActionListener() {
 
-			/*
+			/**
 			 * Este metodo actualiza la tabla de los pokemones.
 			 * 
 			 * @param e nombre del objeto para controlar este evento.
@@ -471,7 +476,7 @@ public class InicioView extends JFrame {
 		panelPrincipal.add(lblImg);
 	}
 
-	/*
+	/**
 	 * Este metodo sirve para almacenar correctamente por filas, los datos de los
 	 * pokemones mediante una tabla.
 	 */
@@ -493,7 +498,7 @@ public class InicioView extends JFrame {
 		}
 	}
 
-	/*
+	/**
 	 * Si el usuario introduce un Numero Negativo salta Excepcion.
 	 */
 	public void checkNegativeNumber(String check) throws NoValidNegativeNumber {
@@ -503,7 +508,7 @@ public class InicioView extends JFrame {
 		}
 	}
 
-	/*
+	/**
 	 * Si el usuario introduce una letra salta Exepcion.
 	 */
 	public void checkNoValidLetter(String check) throws NoValidLetterException {
@@ -523,7 +528,7 @@ public class InicioView extends JFrame {
 		}
 	}
 
-	/*
+	/**
 	 * Metodo PokemonDTO que sirve para agarrar los datos de los pokemones y luego
 	 * los llena en la tabla.
 	 */
@@ -587,7 +592,7 @@ public class InicioView extends JFrame {
 				UrlFoto, generacion);
 	}
 
-	/*
+	/**
 	 * Este metodo actualiza los datos de la tabla de los pokemones.
 	 */
 	public void actualizarTabla() {
@@ -623,14 +628,14 @@ public class InicioView extends JFrame {
 		lblImagenPokemon.setIcon(iconoEscalado);
 	}
 
-	/*
+	/**
 	 * Este metodo elimina una fila de la tabla.
 	 */
 	public void eliminarFila() {
 		model.removeRow(table.getSelectedRow());
 	}
 
-	/*
+	/**
 	 * Cumple la funcion de seleccionar un pokemon de la tabla.
 	 */
 	public void seleccionarPokemon() {
@@ -646,13 +651,13 @@ public class InicioView extends JFrame {
 			txtDefensaEspecial.setText((String) table.getValueAt(filaSelecionada, 9));
 
 			ArrayList<PokemonDTO> listaPokemones = pokemonDAO.getLista();
-			String url = listaPokemones.get(filaSelecionada).getFotogif();
+			String url = listaPokemones.get(filaSelecionada).getFotoGif();
 			nuevaUrl = url.replace("\\", "/");
 			ImageIcon icono = new ImageIcon(nuevaUrl);
 			Image imagen = icono.getImage();
 			int ancho = lblImagenPokemon.getWidth();
 			int alto = lblImagenPokemon.getHeight();
-			Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+			Image imagenEscalada = imagen.getScaledInstance(ancho, alto, Image.SCALE_DEFAULT);
 			lblImagenPokemon.setIcon(new ImageIcon(imagenEscalada));
 
 		} else {
@@ -660,7 +665,7 @@ public class InicioView extends JFrame {
 		}
 	}
 
-	/*
+	/**
 	 * Este metodo sirve para llenar la tarjeta de cada pokemon con sus respectivos
 	 * atributos y caracteristicas.
 	 */
@@ -700,6 +705,10 @@ public class InicioView extends JFrame {
 		cp.llenarCard(nombre, tipoPokemon, generacion, id, vida, ataque, defensa, velocidad, listaAtaque, defensaEsp,
 				nuevaUrl);
 	}
+
+	/**
+	 * Este metodo sirve para mostrar la actualizacion de cada fila y columna.
+	 */
 
 	public void recargar() {
 		int filaSelecionada = table.getSelectedRow();
