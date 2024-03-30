@@ -76,6 +76,7 @@ public class InicioView extends JFrame {
 	private JLabel lblImg;
 	private JLabel lblImagenPokemon;
 	private String nuevaUrl;
+	protected String urlCompleto;
 
 	/**
 	 * El constructor de la clase InicioView se encarga de inicializar y mostrar
@@ -115,6 +116,7 @@ public class InicioView extends JFrame {
 		});
 		listaGeneracion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listaGeneracion.setBounds(274, 407, 56, 68);
+		listaGeneracion.setSelectedIndex(0);
 		panelPrincipal.add(listaGeneracion);
 
 		JLabel lblTituloGeneracion = new JLabel("Generación:");
@@ -125,12 +127,12 @@ public class InicioView extends JFrame {
 		lblTituloGeneracion.setBounds(180, 407, 161, 14);
 		panelPrincipal.add(lblTituloGeneracion);
 
-		JLabel lblTituloFormatoAtaques = new JLabel("Ataque1, Ataque2, Ataque3, Ataque4");
+		JLabel lblTituloFormatoAtaques = new JLabel("Ataque1_Ataque2_Ataque3_Ataque4");
 		lblTituloFormatoAtaques.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTituloFormatoAtaques.setForeground(Color.WHITE);
+		lblTituloFormatoAtaques.setForeground(Color.black);
 		lblTituloFormatoAtaques.setFont(new Font("Arial Black", Font.PLAIN, 14));
-		lblTituloFormatoAtaques.setBackground(Color.LIGHT_GRAY);
-		lblTituloFormatoAtaques.setBounds(20, 513, 293, 14);
+		lblTituloFormatoAtaques.setBackground(Color.black);
+		lblTituloFormatoAtaques.setBounds(20, 513, 320, 15);
 		panelPrincipal.add(lblTituloFormatoAtaques);
 
 		txtListaAtaque = new JTextField();
@@ -151,6 +153,7 @@ public class InicioView extends JFrame {
 		txtDefensaEspecial = new JTextField();
 		txtDefensaEspecial.setColumns(10);
 		txtDefensaEspecial.setBounds(20, 430, 150, 20);
+		txtDefensaEspecial.setText("Bloqueo");
 		panelPrincipal.add(txtDefensaEspecial);
 
 		txtNombre = new JTextField();
@@ -378,34 +381,36 @@ public class InicioView extends JFrame {
 
 		JButton btnSubirImagen = new JButton("Subir Imagen");
 		btnSubirImagen.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        lblImagenPokemon.setText("");
-		        JFileChooser fileChooser = new JFileChooser();
-		        int returnValue = fileChooser.showOpenDialog(null);
-		        if (returnValue == JFileChooser.APPROVE_OPTION) {
-		            File selectedFile = fileChooser.getSelectedFile();
-		            // Ruta relativa dentro del proyecto
-		            String rutaDestino = "src/co/edu/unbosque/view/img/";
-		            Path destino = Paths.get(rutaDestino);
-		            try {
-		                // Obtener la ruta absoluta del directorio actual
-		                Path rutaBase = Paths.get("").toAbsolutePath();
-		                // Combinar la ruta base con la ruta de destino
-		                Path destinoCompleto = rutaBase.resolve(destino).resolve(selectedFile.getName());
-		                // Copiar el archivo seleccionado a la ruta destino
-		                Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
-		                // Escalar imagen para que se adapte al tamaño del JLabel
-		                ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
-		                Image image = imageIcon.getImage();
-		                Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(),
-		                        lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
-		                lblImagenPokemon.setIcon(new ImageIcon(newImage));
-		                UrlFoto = String.valueOf(destinoCompleto);
-		            } catch (IOException ex) {
-		                ex.printStackTrace();
-		            }
-		        }
-		    }
+			public void actionPerformed(ActionEvent e) {
+				lblImagenPokemon.setText("");
+				JFileChooser fileChooser = new JFileChooser();
+				int returnValue = fileChooser.showOpenDialog(null);
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					// Ruta relativa dentro del proyecto
+					String rutaDestino = "src/co/edu/unbosque/view/img/";
+					Path destino = Paths.get(rutaDestino);
+					try {
+						// Obtener la ruta absoluta del directorio actual
+						Path rutaBase = Paths.get("").toAbsolutePath();
+						// Combinar la ruta base con la ruta de destino
+						Path destinoCompleto = rutaBase.resolve(destino).resolve(selectedFile.getName());
+						// Copiar el archivo seleccionado a la ruta destino
+						Files.copy(selectedFile.toPath(), destinoCompleto, StandardCopyOption.REPLACE_EXISTING);
+						// Escalar imagen para que se adapte al tamaño del JLabel
+						ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
+						Image image = imageIcon.getImage();
+						Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(),
+								lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+						lblImagenPokemon.setIcon(new ImageIcon(newImage));
+						UrlFoto = String.valueOf(rutaDestino);
+						urlCompleto = UrlFoto += selectedFile.getName();
+						System.out.println(urlCompleto);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
 		});
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
@@ -457,7 +462,7 @@ public class InicioView extends JFrame {
 		listaTipoDePokemon.setModel(new AbstractListModel() {
 			String[] values = new String[] { "Acero", "Agua", "Bicho", "Dragón", "Eléctrico", "Fantasma", "Fuego",
 					"Hada", "Hielo", "Lucha", "Normal", "Planta", "Psíquico", "Roca", "Siniestro", "Tierra",
-					"Volador" };
+					"Volador","Veneno" };
 
 			public int getSize() {
 				return values.length;
@@ -589,7 +594,7 @@ public class InicioView extends JFrame {
 		}
 
 		return new PokemonDTO(nombre, tipoPokemon, id, vida, ataque, defensa, listaAtaque, defensaEsp, velocidad,
-				UrlFoto, generacion);
+				urlCompleto, generacion);
 	}
 
 	/**
