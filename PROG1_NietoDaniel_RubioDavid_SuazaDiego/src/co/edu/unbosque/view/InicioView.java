@@ -23,11 +23,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import co.edu.unbosque.controller.Controller;
 import co.edu.unbosque.model.PokemonDTO;
@@ -46,6 +48,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JTabbedPane;
+import javax.swing.JInternalFrame;
 
 /**
  * La clase InicioView se encarga de mostrar la ventana principal del
@@ -58,7 +64,7 @@ public class InicioView extends JFrame {
 	private JPanel panelPrincipal;
 	private JTextField txtBusqueda;
 	private JTextField txtNombre;
-	private JTextField txtId;
+	private JTextField txtId; 
 	private JTextField txtVida;
 	private JTextField txtDefensa;
 	private JTextField txtVelocidad;
@@ -76,7 +82,12 @@ public class InicioView extends JFrame {
 	private JLabel lblImg;
 	private JLabel lblImagenPokemon;
 	private String nuevaUrl;
-	protected String urlCompleto;
+	private String urlCompleto;
+	private TableRowSorter TRSfiltro;
+	private JTextField txtUrl;
+	private JTextField txtBusquedaID;
+	private JTextField txtBusquedaTipo;
+	private JTextField txtBusquedaGeneracion;
 
 	/**
 	 * El constructor de la clase InicioView se encarga de inicializar y mostrar
@@ -116,7 +127,6 @@ public class InicioView extends JFrame {
 		});
 		listaGeneracion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listaGeneracion.setBounds(274, 407, 56, 68);
-		listaGeneracion.setSelectedIndex(0);
 		panelPrincipal.add(listaGeneracion);
 
 		JLabel lblTituloGeneracion = new JLabel("Generación:");
@@ -248,19 +258,15 @@ public class InicioView extends JFrame {
 		lblTituloVelocidad.setBounds(180, 351, 161, 14);
 		panelPrincipal.add(lblTituloVelocidad);
 
-		txtBusqueda = new JTextField();
-		txtBusqueda.setBounds(20, 90, 293, 20);
-		panelPrincipal.add(txtBusqueda);
-		txtBusqueda.setColumns(10);
 
-		JLabel lbllistaPokemones = new JLabel("Lista De Pokemones:");
+		JLabel lbllistaPokemones = new JLabel("Lista De Pokemones");
 		lbllistaPokemones.setBackground(new Color(255, 255, 255));
 		lbllistaPokemones.setVerticalTextPosition(SwingConstants.TOP);
 		lbllistaPokemones.setHorizontalTextPosition(SwingConstants.CENTER);
 		lbllistaPokemones.setHorizontalAlignment(SwingConstants.CENTER);
 		lbllistaPokemones.setForeground(new Color(255, 255, 255));
 		lbllistaPokemones.setFont(new Font("Arial Black", Font.BOLD, 20));
-		lbllistaPokemones.setBounds(10, 47, 340, 34);
+		lbllistaPokemones.setBounds(285, 81, 340, 34);
 		panelPrincipal.add(lbllistaPokemones);
 
 		JLabel lblTutorial = new JLabel("Tutorial");
@@ -345,21 +351,13 @@ public class InicioView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cp.setVisible(true);
+				cp.setLocation(735, 100);
 				seleccionarPokemon();
 				llenarCard();
 			}
 		});
 		btnSeleccionarPokemon.setBounds(852, 615, 245, 55);
 		panelPrincipal.add(btnSeleccionarPokemon);
-
-		JLabel lblNombretipogeneracion = new JLabel("Nombre/Tipo/Generación");
-		lblNombretipogeneracion.setVerticalTextPosition(SwingConstants.TOP);
-		lblNombretipogeneracion.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblNombretipogeneracion.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNombretipogeneracion.setForeground(Color.WHITE);
-		lblNombretipogeneracion.setFont(new Font("Arial Black", Font.BOLD, 15));
-		lblNombretipogeneracion.setBounds(462, 81, 221, 34);
-		panelPrincipal.add(lblNombretipogeneracion);
 
 		lblImagenPokemon = new JLabel();
 		lblImagenPokemon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -406,6 +404,7 @@ public class InicioView extends JFrame {
 						UrlFoto = String.valueOf(rutaDestino);
 						urlCompleto = UrlFoto += selectedFile.getName();
 						System.out.println(urlCompleto);
+						txtUrl.setText(urlCompleto);
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					}
@@ -414,22 +413,6 @@ public class InicioView extends JFrame {
 		});
 		btnSubirImagen.setBounds(493, 403, 135, 23);
 		panelPrincipal.add(btnSubirImagen);
-
-		JButton btnActualizarTabla = new JButton("Actualizar Tabla");
-		btnActualizarTabla.addActionListener(new ActionListener() {
-
-			/**
-			 * Este metodo actualiza la tabla de los pokemones.
-			 * 
-			 * @param e nombre del objeto para controlar este evento.
-			 */
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
-		btnActualizarTabla.setBounds(323, 83, 133, 34);
-		panelPrincipal.add(btnActualizarTabla);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(20, 121, 663, 112);
@@ -450,6 +433,7 @@ public class InicioView extends JFrame {
 		model.addColumn("Velocidad");
 		model.addColumn("Ataques Especiales");
 		model.addColumn("Defensa Especial");
+		model.addColumn("Imagen");
 		llenarTabla();
 		scrollPane.setViewportView(table);
 
@@ -474,7 +458,86 @@ public class InicioView extends JFrame {
 		});
 		listaTipoDePokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listaTipoDePokemon.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
+		
+		txtUrl = new JTextField();
+		txtUrl.setEnabled(false);
+		txtUrl.setEditable(false);
+		txtUrl.setColumns(10);
+		txtUrl.setBounds(483, 430, 161, 20);
+		panelPrincipal.add(txtUrl);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(20, 31, 245, 84);
+		panelPrincipal.add(tabbedPane);
+		
+		JPanel panelNombre = new JPanel();
+		tabbedPane.addTab("Nombre", null, panelNombre, null);
+				panelNombre.setLayout(null);
+				
+				txtBusqueda = new JTextField();
+				txtBusqueda.setBounds(10, 5, 206, 20);
+				panelNombre.add(txtBusqueda);
+				txtBusqueda.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(final KeyEvent e) {
+						String cadena = txtBusqueda.getText();
+						txtBusqueda.setText(cadena);
+						filtroPorNombre();
+					}
+				});
+				
+		JPanel panelID = new JPanel();
+		tabbedPane.addTab("ID", null, panelID, null);
+		panelID.setLayout(null);
+		
+		txtBusquedaID = new JTextField();
+		txtBusquedaID.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(final KeyEvent e) {
+				String cadena = txtBusquedaID.getText();
+				txtBusqueda.setText(cadena);
+				filtroPorID();
+			}
+		});
+		
+		txtBusquedaID.setBounds(10, 5, 220, 20);
+		panelID.add(txtBusquedaID);
+		
+		JPanel panelTipoPokemon = new JPanel();
+		tabbedPane.addTab("Tipo De Pokemon", null, panelTipoPokemon, null);
+		panelTipoPokemon.setLayout(null);
+		
+		txtBusquedaTipo = new JTextField();
+		txtBusquedaTipo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(final KeyEvent e) {
+				String cadena = txtBusquedaTipo.getText();
+				txtBusqueda.setText(cadena);
+				filtroPorTipo();
+			}
+		});
+		txtBusquedaTipo.setBounds(10, 5, 220, 20);
+		panelTipoPokemon.add(txtBusquedaTipo);
+		
+		JPanel panelGeneracion = new JPanel();
+		tabbedPane.addTab("Generación", null, panelGeneracion, null);
+		panelGeneracion.setLayout(null);
+		
+		txtBusquedaGeneracion = new JTextField();
+		txtBusquedaGeneracion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(final KeyEvent e) {
+				String cadena = txtBusquedaGeneracion.getText();
+				txtBusqueda.setText(cadena);
+				filtroPorGeneracion();
+			}
+		});
+		txtBusquedaGeneracion.setBounds(10, 5, 220, 20);
+		panelGeneracion.add(txtBusquedaGeneracion);
+		
+		TRSfiltro = new TableRowSorter(table.getModel());
+		table.setRowSorter(TRSfiltro);
+		
 		lblImg = new JLabel("");
 		lblImg.setIcon(new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/scorbunny.jpg")));
 		lblImg.setBounds(0, 0, 1176, 681);
@@ -488,7 +551,7 @@ public class InicioView extends JFrame {
 	public void llenarTabla() {
 		ArrayList<PokemonDTO> listaPokemones = pokemonDAO.getLista();
 		for (PokemonDTO pokemonDTO : listaPokemones) {
-			Object[] fila = new Object[10];
+			Object[] fila = new Object[11];
 			fila[0] = pokemonDTO.getNombre();
 			fila[1] = pokemonDTO.getTipoPokemon();
 			fila[2] = pokemonDTO.getGeneracion();
@@ -499,6 +562,7 @@ public class InicioView extends JFrame {
 			fila[7] = pokemonDTO.getVelocidad();
 			fila[8] = pokemonDTO.getListaAtaque();
 			fila[9] = pokemonDTO.getDefensaEspecial();
+			fila[10] = pokemonDTO.getFotoGif();
 			model.addRow(fila);
 		}
 	}
@@ -548,6 +612,7 @@ public class InicioView extends JFrame {
 		int velocidad = 0;
 		String listaAtaque = "";
 		String defensaEsp = "";
+		String urlFinal = "";
 
 		try {
 			nombre = txtNombre.getText();
@@ -584,7 +649,10 @@ public class InicioView extends JFrame {
 			checkNoValidNumber(listaAtaque);
 			defensaEsp = txtDefensaEspecial.getText();
 			checkNoValidNumber(defensaEsp);
-
+			//txtUrl.setText(urlCompleto);
+			urlFinal = txtUrl.getText();
+			System.out.println(urlFinal);
+			
 		} catch (NameNotValidException e) {
 			JOptionPane.showMessageDialog(null, "No se aceptan numeros en este campo");
 		} catch (NoValidNegativeNumber e) {
@@ -594,14 +662,14 @@ public class InicioView extends JFrame {
 		}
 
 		return new PokemonDTO(nombre, tipoPokemon, id, vida, ataque, defensa, listaAtaque, defensaEsp, velocidad,
-				urlCompleto, generacion);
+				urlFinal, generacion);
 	}
 
 	/**
 	 * Este metodo actualiza los datos de la tabla de los pokemones.
 	 */
 	public void actualizarTabla() {
-		Object[] fila = new Object[10];
+		Object[] fila = new Object[11];
 		fila[0] = agarrarDatos().getNombre();
 		fila[1] = agarrarDatos().getTipoPokemon();
 		fila[2] = agarrarDatos().getGeneracion();
@@ -612,6 +680,7 @@ public class InicioView extends JFrame {
 		fila[7] = agarrarDatos().getVelocidad();
 		fila[8] = agarrarDatos().getListaAtaque();
 		fila[9] = agarrarDatos().getDefensaEspecial();
+		fila[10] = agarrarDatos().getFotoGif();
 		model.addRow(fila);
 	}
 
@@ -624,11 +693,11 @@ public class InicioView extends JFrame {
 		txtVelocidad.setText("");
 		txtListaAtaque.setText("");
 		txtDefensaEspecial.setText("");
-
+		txtUrl.setText("");
+		
 		ImageIcon icono = new ImageIcon(InicioView.class.getResource("/co/edu/unbosque/view/img/Icono.png"));
 		Image imagen = icono.getImage();
-		Image imagenEscalada = imagen.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(),
-				Image.SCALE_SMOOTH);
+		Image imagenEscalada = imagen.getScaledInstance(lblImagenPokemon.getWidth(), lblImagenPokemon.getHeight(),Image.SCALE_DEFAULT);
 		ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
 		lblImagenPokemon.setIcon(iconoEscalado);
 	}
@@ -654,9 +723,30 @@ public class InicioView extends JFrame {
 			txtVelocidad.setText(Integer.toString((int) table.getValueAt(filaSelecionada, 7)));
 			txtListaAtaque.setText((String) table.getValueAt(filaSelecionada, 8));
 			txtDefensaEspecial.setText((String) table.getValueAt(filaSelecionada, 9));
-
-			ArrayList<PokemonDTO> listaPokemones = pokemonDAO.getLista();
-			String url = listaPokemones.get(filaSelecionada).getFotoGif();
+			txtUrl.setText((String) table.getValueAt(filaSelecionada, 10));
+			
+			int op = (int) table.getValueAt(filaSelecionada, 2);
+			switch (op) {
+			case 1: {
+				listaGeneracion.setSelectedIndex(0);
+				break;
+			}case 2:{
+				listaGeneracion.setSelectedIndex(1);
+				break;
+			}case 3:{
+				listaGeneracion.setSelectedIndex(2);
+				break;
+			}case 9:{
+				listaGeneracion.setSelectedIndex(3);
+				break;
+			}
+			default:
+				JOptionPane.showMessageDialog(null, "El Pokemon no tiene categoria");
+			}	
+			
+			mostarEnListaTipoPokemon();
+		
+			String url = txtUrl.getText();
 			nuevaUrl = url.replace("\\", "/");
 			ImageIcon icono = new ImageIcon(nuevaUrl);
 			Image imagen = icono.getImage();
@@ -686,6 +776,7 @@ public class InicioView extends JFrame {
 		int velocidad = 0;
 		String listaAtaque = "";
 		String defensaEsp = "";
+		String urlFinal = "";
 
 		nombre = txtNombre.getText();
 		int filaSelecionada = table.getSelectedRow();
@@ -706,9 +797,10 @@ public class InicioView extends JFrame {
 		velocidad = Integer.parseInt(velocidadStr);
 		listaAtaque = txtListaAtaque.getText();
 		defensaEsp = txtDefensaEspecial.getText();
+		urlFinal = txtUrl.getText();
 
 		cp.llenarCard(nombre, tipoPokemon, generacion, id, vida, ataque, defensa, velocidad, listaAtaque, defensaEsp,
-				nuevaUrl);
+				urlFinal);
 	}
 
 	/**
@@ -720,7 +812,7 @@ public class InicioView extends JFrame {
 		if (filaSelecionada != -1) {
 			model.setValueAt(txtNombre.getText(), filaSelecionada, 0);
 			model.setValueAt(listaTipoDePokemon.getSelectedValue(), filaSelecionada, 1);
-			model.setValueAt(listaGeneracion.getSelectedValue(), filaSelecionada, 2);
+			model.setValueAt(Integer.parseInt((String) listaGeneracion.getSelectedValue()), filaSelecionada, 2);
 			model.setValueAt(Integer.parseInt(txtId.getText()), filaSelecionada, 3);
 			model.setValueAt(Integer.parseInt(txtVida.getText()), filaSelecionada, 4);
 			model.setValueAt(Integer.parseInt(txtAtaque.getText()), filaSelecionada, 5);
@@ -728,9 +820,99 @@ public class InicioView extends JFrame {
 			model.setValueAt(Integer.parseInt(txtVelocidad.getText()), filaSelecionada, 7);
 			model.setValueAt(txtListaAtaque.getText(), filaSelecionada, 8);
 			model.setValueAt(txtDefensaEspecial.getText(), filaSelecionada, 9);
+			model.setValueAt(txtUrl.getText(), filaSelecionada, 10);
 
 		} else {
 			JOptionPane.showMessageDialog(null, "Debes selecionar una pokemon en la tabla");
 		}
+	}
+	public void filtroPorNombre(){
+		int columnaNombre = 0;
+		TRSfiltro.setRowFilter(RowFilter.regexFilter(txtBusqueda.getText(), columnaNombre));
+		
+	}
+	public void filtroPorTipo(){
+		int columnaNombre = 1;
+		TRSfiltro.setRowFilter(RowFilter.regexFilter(txtBusqueda.getText(), columnaNombre));
+		
+	}
+	public void filtroPorGeneracion(){
+		int columnaNombre = 2;
+		TRSfiltro.setRowFilter(RowFilter.regexFilter(txtBusqueda.getText(), columnaNombre));
+		
+	}
+	public void filtroPorID(){
+		int columnaNombre = 3;
+		TRSfiltro.setRowFilter(RowFilter.regexFilter(txtBusqueda.getText(), columnaNombre));
+		
+	}
+	public void mostarEnListaTipoPokemon() {
+		int filaSelecionada = table.getSelectedRow();
+		if (filaSelecionada != -1) {
+			String tipoPokemon = (String) table.getValueAt(filaSelecionada, 1);
+			
+			switch (tipoPokemon) {
+			case "Acero": {
+				listaTipoDePokemon.setSelectedIndex(0);
+				break;
+			}case "Agua": {
+				listaTipoDePokemon.setSelectedIndex(1);
+				break;
+			}case "Bicho": {
+				listaTipoDePokemon.setSelectedIndex(2);
+				break;
+			}case "Dragón": {
+				listaTipoDePokemon.setSelectedIndex(3);
+				break;
+			}case "Eléctrico": {
+				listaTipoDePokemon.setSelectedIndex(4);
+				break;
+			}case "Fantasma": {
+				listaTipoDePokemon.setSelectedIndex(5);
+				break;
+			}case "Fuego": {
+				listaTipoDePokemon.setSelectedIndex(6);
+				break;
+			}case "Hada": {
+				listaTipoDePokemon.setSelectedIndex(7);
+				break;
+			}case "Hielo": {
+				listaTipoDePokemon.setSelectedIndex(8);
+				break;
+			}case "Lucha": {
+				listaTipoDePokemon.setSelectedIndex(9);
+				break;
+			}case "Normal": {
+				listaTipoDePokemon.setSelectedIndex(10);
+				break;
+			}case "Planta": {
+				listaTipoDePokemon.setSelectedIndex(11);
+				break;
+			}case "Psíquico": {
+				listaTipoDePokemon.setSelectedIndex(12);
+				break;
+			}case "Roca": {
+				listaTipoDePokemon.setSelectedIndex(13);
+				break;
+			}case "Siniestro": {
+				listaTipoDePokemon.setSelectedIndex(14);
+				break;
+			}case "Tierra": {
+				listaTipoDePokemon.setSelectedIndex(15);
+				break;
+			}case "Volador": {
+				listaTipoDePokemon.setSelectedIndex(16);
+				break;
+			}case "Veneno": {
+				listaTipoDePokemon.setSelectedIndex(17);
+				break;
+			}default:
+				JOptionPane.showMessageDialog(null, "El pokemon no tiene tipo");
+			}
+			
+			
+			
+		}
+		
 	}
 }

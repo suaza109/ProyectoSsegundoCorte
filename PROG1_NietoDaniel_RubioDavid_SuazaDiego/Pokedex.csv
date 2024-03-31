@@ -1,7 +1,7 @@
-bulbasaur;Planta;1;30;30;30;espesura;bloqueo;30;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\bulbasor.png;1;
+bulbasaur;Planta;1;30;30;30;espesura;bloqueo;30;src/co/edu/unbosque/view/img/bulbasor.png;1;
 ivysaur;Planta;2;40;40;40;espesura;bloqueo;40;src/co/edu/unbosque/view/img/002.png;1;
 venusaur;Planta;3;50;50;50;espesura;bloqueo;50;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\003.png;1;
-charmander;Fuego;4;30;40;30;MarLlamas;bloqueo;40;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\004.png;1;
+charmander;Fuego;4;30;40;30;MarLlamas;bloqueo;40;src/co/edu/unbosque/view/img/004.png;1;
 charmeleon;Fuego;5;40;40;40;MarLlamas;bloqueo;50;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\005.png;1;
 charizard;Fuego;6;50;50;50;MarLlamas;bloqueo;60;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\006.png;1;
 squirtle;Agua;7;30;30;40;torrente;bloqueo;30;C:\Users\suaza\git\repository\PROG1_NietoDaniel_RubioDavid_SuazaDiego\src\co\edu\unbosque\view\img\007.png;1;
@@ -84,4 +84,3 @@ Farfetchd;Normal;83;50;60;40;VistaLince_FuerzaMental;bloqueo;70;src/co/edu/unbos
 doduo;Normal;84;30;50;40;Fuga_Madrugar;bloqueo;60;src/co/edu/unbosque/view/img/084.png;1;
 dodrio;Normal;85;40;50;50;Fuga_Madrugar;bloqueo;40;src/co/edu/unbosque/view/img/085.png;1;
 seel;Agua;86;40;40;30;Sebo_Hidratacion;bloqueo;20;src/co/edu/unbosque/view/img/086.png;1;
-dewgong;Agua;87;50;60;70;Sebo_Hidratacion;bloqueo;30;src/co/edu/unbosque/view/img/087.png;1;
