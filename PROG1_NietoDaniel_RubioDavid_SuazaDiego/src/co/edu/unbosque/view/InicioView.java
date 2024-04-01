@@ -399,7 +399,7 @@ public class InicioView extends JFrame {
 						ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
 						Image image = imageIcon.getImage();
 						Image newImage = image.getScaledInstance(lblImagenPokemon.getWidth(),
-								lblImagenPokemon.getHeight(), Image.SCALE_SMOOTH);
+								lblImagenPokemon.getHeight(), Image.SCALE_DEFAULT);
 						lblImagenPokemon.setIcon(new ImageIcon(newImage));
 						UrlFoto = String.valueOf(rutaDestino);
 						urlCompleto = UrlFoto += selectedFile.getName();
