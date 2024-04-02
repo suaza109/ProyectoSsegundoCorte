@@ -428,7 +428,6 @@ public class InicioView extends JFrame {
 						lblImagenPokemon.setIcon(new ImageIcon(newImage));
 						UrlFoto = String.valueOf(rutaDestino);
 						urlCompleto = UrlFoto += selectedFile.getName();
-						System.out.println(urlCompleto);
 						txtUrl.setText(urlCompleto);
 					} catch (IOException ex) {
 						ex.printStackTrace();
@@ -676,7 +675,6 @@ public class InicioView extends JFrame {
 			checkNoValidNumber(defensaEsp);
 			//txtUrl.setText(urlCompleto);
 			urlFinal = txtUrl.getText();
-			System.out.println(urlFinal);
 			
 		} catch (NameNotValidException e) {
 			JOptionPane.showMessageDialog(null, "No se aceptan numeros en este campo");
