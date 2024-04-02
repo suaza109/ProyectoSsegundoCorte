@@ -2,6 +2,7 @@ package co.edu.unbosque.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
@@ -270,12 +271,36 @@ public class InicioView extends JFrame {
 		panelPrincipal.add(lbllistaPokemones);
 
 		JLabel lblTutorial = new JLabel("Tutorial");
+		lblTutorial.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String videoUrl = "src/co/edu/unbosque/view/img/tutorialPokedex.mp4";
+		        try {
+		            // Verificamos si el escritorio es compatible para abrir archivos
+		            if (Desktop.isDesktopSupported()) {
+		                Desktop desktop = Desktop.getDesktop();
+		                // Verificar si el archivo de video existe
+		                File videoFile = new File(videoUrl);
+		                if (videoFile.exists()) {
+		                    // Abrir el archivo de video con el reproductor predeterminado del sistema
+		                    desktop.open(videoFile);
+		                } else {
+		                    System.out.println("El archivo de video no existe.");
+		                }
+		            } else {
+		                System.out.println("El escritorio no es compatible.");
+		            }
+		        } catch (IOException i) {
+		            System.out.println("Error al abrir el archivo de video: ");
+		        }
+			}
+		});
 		lblTutorial.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblTutorial.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTutorial.setForeground(new Color(255, 255, 255));
 		lblTutorial.setFont(lblTutorial.getFont().deriveFont(lblTutorial.getFont().getStyle() | Font.BOLD | Font.ITALIC,
 				lblTutorial.getFont().getSize() + 5f));
-		lblTutorial.setBounds(871, 531, 198, 34);
+		lblTutorial.setBounds(838, 528, 198, 34);
 		panelPrincipal.add(lblTutorial);
 
 		JLabel lblTitulo = new JLabel("Bienvenido a la Pokedex");
